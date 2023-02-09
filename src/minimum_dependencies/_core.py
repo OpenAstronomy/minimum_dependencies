@@ -57,26 +57,28 @@ def minimum_version(requirement: Requirement) -> Version:
 def create(package: str, extras: list = None) -> list[str]:
     """Create a list of requirements for a given package."""
     extras = [] if extras is None else extras
-
     requirements = []
-    for r in requires(package):
-        requirement = Requirement(r)
 
-        if requirement.marker is None or any(
-            requirement.marker.evaluate({"extra": e}) for e in extras
-        ):
-            name = (
-                f"{requirement.name}[{','.join(requirement.extras)}]"
-                if requirement.extras
-                else requirement.name
-            )
+    requires_ = requires(package)
+    if requires_ is not None:
+        for r in requires_:
+            requirement = Requirement(r)
 
-            if requirement.url is None:
-                requirements.append(
-                    f"{name}=={minimum_version(requirement)}\n",
+            if requirement.marker is None or any(
+                requirement.marker.evaluate({"extra": e}) for e in extras
+            ):
+                name = (
+                    f"{requirement.name}[{','.join(requirement.extras)}]"
+                    if requirement.extras
+                    else requirement.name
                 )
-            else:
-                requirements.append(f"{name} @{requirement.url}\n")
+
+                if requirement.url is None:
+                    requirements.append(
+                        f"{name}=={minimum_version(requirement)}\n",
+                    )
+                else:
+                    requirements.append(f"{name} @{requirement.url}\n")
 
     return requirements
 

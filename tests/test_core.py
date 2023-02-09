@@ -263,6 +263,11 @@ class TestCreate:
                 self.base_requrirements + self.url_requirements,
             )
 
+    @staticmethod
+    def test_empty():
+        """Test that a package with no requirements returns an empty list."""
+        assert create("packaging") == []
+
 
 class TestWrite:
     """Test the _core.write function."""
