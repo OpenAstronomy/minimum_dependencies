@@ -23,6 +23,7 @@ coverage.xml
 # Sphinx
 docs/api
 docs/_build
+requirements.txt
 
 # Eclipse editor project files
 .project

@@ -18,6 +18,9 @@ class TestMain:
             "pytest==6.0.0\n",
             "pytest-doctestplus==0.12.0\n",
         ]
+        self.test_other = [
+            "astropy[all]==5.0\n",
+        ]
 
     def test_basic_main(self, capsys):
         """Test the main function."""
@@ -26,9 +29,9 @@ class TestMain:
 
     def test_extras_main(self, capsys):
         """Test the main function with extras."""
-        main(["minimum_dependencies", "--extras", "test"])
+        main(["minimum_dependencies", "--extras", "test", "other"])
         assert capsys.readouterr().out == "".join(
-            self.base_requrirements + self.test_requirements,
+            self.base_requrirements + self.test_other + self.test_requirements,
         )
 
     def test_filename_main(self, tmp_path, capsys):

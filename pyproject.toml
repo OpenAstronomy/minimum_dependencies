@@ -24,6 +24,9 @@ dependencies = [
   "requests>=2.22",
 ]
 [project.optional-dependencies]
+other = [
+  "astropy[all]>=5",
+]
 test = [
   "pytest>=6",
   "pytest-doctestplus>=0.12",
@@ -47,7 +50,7 @@ console_scripts = {minimum_dependencies = 'minimum_dependencies._script:main'}
 write_to = "src/minimum_dependencies/_version.py"
 
 [tool.pytest.ini_options]
-testpaths = ['tests']
+testpaths = ['tests', 'README.rst']
 minversion = 4.6
 norecursedirs = ['build']
 doctest_plus = 'enabled'

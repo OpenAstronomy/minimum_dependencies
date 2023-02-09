@@ -11,7 +11,10 @@ def _argparser() -> ArgumentParser:
     """Create the argument parser."""
     parser = ArgumentParser(
         "minimum_deps",
-        description="Generate a requirements-min.txt file based on install_requires",
+        description=(
+            "Generate the minimum requirements for a package based on "
+            "the lower pins of its dependencies."
+        ),
     )
     parser.add_argument(
         "package",
