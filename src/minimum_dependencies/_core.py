@@ -70,12 +70,12 @@ def create(package: str, extras: list = None) -> str:
                     f"{requirement.name}=={minimum_version(requirement)}\n",
                 )
             else:
-                requirements.append(f"{requirement}\n")
+                requirements.append(f"{requirement.url}\n")
 
     return "".join(requirements)
 
 
-def write(package: str, filename: str, extras: list = None) -> None:
+def write(package: str, filename: str = None, extras: list = None) -> None:
     """Write out a requirements file for a given package."""
     requirements = create(package, extras=extras)
 
