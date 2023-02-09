@@ -32,7 +32,6 @@ tests = [
   "pytest-doctestplus",
 ]
 
-
 [build-system]
 build-backend = 'setuptools.build_meta'
 requires = [
@@ -43,6 +42,9 @@ requires = [
 
 [tool.setuptools.packages.find]
 where = ['src']
+
+[project.entry-points]
+console_scripts = {minimum_dependencies = 'minimum_dependencies._script:main'}
 
 [tool.setuptools_scm]
 write_to = "src/minimum_dependencies/_version.py"
