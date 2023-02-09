@@ -12,7 +12,7 @@ import requests
 from packaging.requirements import Requirement
 from packaging.version import Version
 
-from minimum_dependencies._core import create, minimum_version, versions
+from minimum_dependencies._core import create, minimum_version, versions, write
 
 
 class TestVersions:
@@ -135,7 +135,7 @@ def set_dir(path: Path):
         os.chdir(origin)
 
 
-@pytest.fixture(scope="class")
+@pytest.fixture(scope="module")
 def mock_package(tmp_path_factory):
     """Create a mock package for testing."""
     mock_package = tmp_path_factory.mktemp("mock_package")
@@ -258,3 +258,33 @@ class TestCreate:
             ) == set(
                 self.base_requrirements + self.url_requirements,
             )
+
+
+class TestWrite:
+    """Test the _core.write function."""
+
+    def test_stout(self, mock_package, capsys):
+        """Test writing to stdout."""
+        with set_dir(mock_package):
+            import_module("mock_package")
+
+            write("mock_package", extras=["docs", "test", "url"])
+            assert capsys.readouterr().out == create(
+                "mock_package",
+                extras=["docs", "test", "url"],
+            )
+
+    def test_filename(self, mock_package, tmp_path):
+        """Test writing to a file."""
+        filename = tmp_path / "requirements-min.txt"
+
+        with set_dir(mock_package):
+            import_module("mock_package")
+
+            write("mock_package", filename=filename, extras=["docs", "test", "url"])
+
+            with filename.open("r") as f:
+                assert f.read() == create(
+                    "mock_package",
+                    extras=["docs", "test", "url"],
+                )

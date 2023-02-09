@@ -1,9 +1,9 @@
 """Core functionality for minimum_dependencies."""
 
+import sys
 import warnings
 from contextlib import suppress
 from pathlib import Path
-from sys import stdout
 
 import requests
 from importlib_metadata import requires
@@ -80,7 +80,8 @@ def write(package: str, filename: str = None, extras: list = None) -> None:
     requirements = create(package, extras=extras)
 
     if filename is None:
-        stdout.write(requirements)
+        sys.stdout.write(requirements)
+        sys.stdout.flush()
     else:
         with Path(filename).open("w") as fd:
             fd.write(requirements)
