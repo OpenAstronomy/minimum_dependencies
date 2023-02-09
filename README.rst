@@ -41,24 +41,23 @@ The manpage for the CLI tool is below:
     --extras [EXTRAS ...], -e [EXTRAS ...]
                             List of optional dependency sets to include
 
-For example, to generate the minimum dependencies for ``requests``:
+For example, to generate the minimum dependencies for ``minimum_dependencies``:
 
 .. code-block:: console
 
     $ minimum_dependencies requests
-    charset-normalizer==2.0.0
-    idna==2.5
-    urllib3==1.21.1
-    certifi==2017.4.17
+    importlib-metadata==4.11.4
+    packaging==23.0
+    requests==2.25.0
 
-Similarly, to generate the minimum dependencies for ``minimum_dependencies`` with all its optional dependencies:
+Similarly, to generate this with some of its optional dependencies (``test`` and ``other``):
 
 .. code-block:: console
 
     $ minimum_dependencies minimum_dependencies --extras test other
     importlib-metadata==4.11.4
-    packaging==19.0
-    requests==2.22.0
+    packaging==23.0
+    requests==2.25.0
     astropy[all]==5.0
     pytest==6.0.0
     pytest-doctestplus==0.12.0
@@ -70,15 +69,15 @@ The library provides two public functions:
     * ``create``: takes a package name and returns a list of requirement strings.
     * ``write``: takes a package name and a filename and writes the requirements to the file.
 
-For example, to generate the minimum dependencies for ``requests``:
+For example, to generate the minimum dependencies for ``minimum_dependencies``:
 
 .. code:: pycon
 
     >>> import minimum_dependencies
-    >>> minimum_dependencies.create("requests")
-    ['charset-normalizer==2.0.0\n', 'idna==2.5\n', 'urllib3==1.21.1\n', 'certifi==2017.4.17\n']
+    >>> minimum_dependencies.create("minimum_dependencies")
+    ['importlib-metadata==4.11.4\n', 'packaging==23.0\n', 'requests==2.25.0\n']
     >>> minimum_dependencies.write(
-    ...     "requests", "requirements.txt"
+    ...     "minimum_dependencies", "requirements.txt"
     ... )  # writes the requirements to requirements.txt
 
 One can also pass these methods a list of ``extras`` (optional installs for the package) to
@@ -89,7 +88,7 @@ with all its optional dependencies:
 
     >>> import minimum_dependencies
     >>> minimum_dependencies.create("minimum_dependencies", extras=["test", "other"])
-    ['importlib-metadata==4.11.4\n', 'packaging==19.0\n', 'requests==2.22.0\n', 'astropy[all]==5.0\n', 'pytest==6.0.0\n', 'pytest-doctestplus==0.12.0\n']
+    ['importlib-metadata==4.11.4\n', 'packaging==23.0\n', 'requests==2.25.0\n', 'astropy[all]==5.0\n', 'pytest==6.0.0\n', 'pytest-doctestplus==0.12.0\n']
     >>> minimum_dependencies.write(
     ...     "minimum_dependencies", "requirements.txt", extras=["test", "other"]
     ... )  # writes the requirements to requirements.txt

@@ -11,8 +11,8 @@ class TestMain:
         """Create the truths for testing."""
         self.base_requrirements = [
             "importlib-metadata==4.11.4\n",
-            "packaging==19.0\n",
-            "requests==2.22.0\n",
+            "packaging==23.0\n",
+            "requests==2.25.0\n",
         ]
         self.test_requirements = [
             "pytest==6.0.0\n",

@@ -14,6 +14,8 @@ from packaging.version import Version
 
 from minimum_dependencies._core import create, minimum_version, versions, write
 
+OLD_REQUESTS = Version(requests.__version__) < Version("2.28.2")
+
 
 class TestVersions:
     """Test the _core.versions function."""
@@ -29,6 +31,10 @@ class TestVersions:
         assert len(result) >= min_length
 
     @staticmethod
+    @pytest.mark.skipif(
+        OLD_REQUESTS,
+        reason="Requests changed something that necessitated handling dirty versions.",
+    )
     def test_dirty_requirement():
         """
         Test with a requirement that has a dirty version specifier.
