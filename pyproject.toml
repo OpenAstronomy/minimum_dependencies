@@ -50,7 +50,7 @@ console_scripts = {minimum_dependencies = 'minimum_dependencies._script:main'}
 write_to = "src/minimum_dependencies/_version.py"
 
 [tool.pytest.ini_options]
-testpaths = ['tests', 'README.rst']
+testpaths = ['src', 'README.rst']
 minversion = 4.6
 norecursedirs = ['build']
 doctest_plus = 'enabled'
