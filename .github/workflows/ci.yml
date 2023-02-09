@@ -35,18 +35,18 @@ jobs:
         - macos: py310
         - windows: py310
 
-  # dev:
-  #   needs: [core]
-  #   uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
-  #   with:
-  #     submodules: false
-  #     # Any env name which does not start with `pyXY` will use this Python version.
-  #     default_python: '3.9'
-  #     envs: |
-  #       - linux: py38-devdeps
-  #       - linux: py39-devdeps
-  #       - linux: py310-devdeps
-  #       - linux: py311-devdeps
+  dev:
+    needs: [core]
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
+    with:
+      submodules: false
+      # Any env name which does not start with `pyXY` will use this Python version.
+      default_python: '3.9'
+      envs: |
+        - linux: py38-devdeps
+        - linux: py39-devdeps
+        - linux: py310-devdeps
+        - linux: py311-devdeps
 
   oldest:
     needs: [core]
