@@ -4,6 +4,7 @@ import sys
 import warnings
 from contextlib import suppress
 from pathlib import Path
+from typing import List
 
 import requests
 from importlib_metadata import requires
@@ -11,7 +12,7 @@ from packaging.requirements import Requirement
 from packaging.version import InvalidVersion, Version, parse
 
 
-def versions(requirement: Requirement) -> list[Version]:
+def versions(requirement: Requirement) -> List[Version]:
     """Get the versions available on PyPi for a given requirement."""
     content = requests.get(
         f"https://pypi.python.org/pypi/{requirement.name}/json",
@@ -54,7 +55,7 @@ def minimum_version(requirement: Requirement) -> Version:
     return versions_[0]
 
 
-def create(package: str, extras: list = None) -> list[str]:
+def create(package: str, extras: list = None) -> List[str]:
     """Create a list of requirements for a given package."""
     extras = [] if extras is None else extras
     requirements = []

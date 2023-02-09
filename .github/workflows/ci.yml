@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run every Monday at 6am UTC
+    - cron: '0 6 * * 1'
+  push:
+    branches:
+      - main
+      - '*.x'
+    tags:
+      - '*'
+  pull_request:
+
+jobs:
+  core:
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
+    with:
+      submodules: false
+      # Any env name which does not start with `pyXY` will use this Python version.
+      envs: |
+        - linux: py38
+        - linux: py39
+        - linux: py10
+        - linux: py311
+
+  test:
+    needs: [core]
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
+    with:
+      submodules: false
+      # Any env name which does not start with `pyXY` will use this Python version.
+      envs: |
+        - macos: py310
+        - windows: py310
+
+  # dev:
+  #   needs: [core]
+  #   uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
+  #   with:
+  #     submodules: false
+  #     # Any env name which does not start with `pyXY` will use this Python version.
+  #     default_python: '3.9'
+  #     envs: |
+  #       - linux: py38-devdeps
+  #       - linux: py39-devdeps
+  #       - linux: py310-devdeps
+  #       - linux: py311-devdeps
+
+  oldest:
+    needs: [core]
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
+    with:
+      submodules: false
+      # Any env name which does not start with `pyXY` will use this Python version.
+      default_python: '3.9'
+      envs: |
+        - linux: py38-minimum_dependencies
+        - linux: py39-minimum_dependencies
+        - linux: py310-minimum_dependencies
+        - linux: py311-minimum_dependencies
+
+  package:
+    needs: [core]
+    uses: OpenAstronomy/github-actions-workflows/.github/workflows/publish_pure_python.yml@v1
+    with:
+      upload_to_pypi: false
+      upload_to_anaconda: false
+      test_extras: test
+      test_command: pytest --pyargs minimum_dependencies
