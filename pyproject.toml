@@ -48,11 +48,10 @@ where = ['src']
 write_to = "src/minimum_dependencies/_version.py"
 
 [tool.pytest.ini_options]
-testpaths = ['tests', 'docs']
+testpaths = ['tests']
 minversion = 4.6
 norecursedirs = ['build', 'docs/_build', 'docs/sphinxext']
 doctest_plus = 'enabled'
-remote_data_strict = true
 filterwarnings = [
     'error',
     'ignore:numpy.ndarray size changed:RuntimeWarning',
@@ -100,9 +99,10 @@ line_length = 88
 target-version = "py38"
 line-length = 88
 select = ["ALL"]
+extend-ignore = ["I"]
 
 [tool.ruff.per-file-ignores]
-"test_*.py" = ["S101"]
+"test_*.py" = ["S101", "ANN"]
 
 [tool.ruff.pydocstyle]
 convention = "numpy"

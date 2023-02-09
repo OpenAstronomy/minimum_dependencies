@@ -11,12 +11,16 @@ from packaging.requirements import Requirement
 from packaging.version import InvalidVersion, Version, parse
 
 
-def versions(requirement: Requirement) -> list(Version):
+def versions(requirement: Requirement) -> list[Version]:
     """Get the versions available on PyPi for a given requirement."""
     content = requests.get(
         f"https://pypi.python.org/pypi/{requirement.name}/json",
         timeout=30,
     ).json()
+
+    if "releases" not in content:
+        msg = f"Package {requirement.name} not found on PyPi."
+        raise ValueError(msg)
 
     versions = []
     for v in content["releases"]:
@@ -30,12 +34,12 @@ def minimum_version(requirement: Requirement) -> Version:
     """Return minimum version available on PyPi for a given version specification."""
     if not requirement.specifier:
         warnings.warn(
-            f"No version specifier for {requirement.name} in "
-            "install_requires.  Using lowest available version on PyPi.",
+            f"No version specifier for {requirement.name} in install_requires.\n"
+            "Using lowest available version on PyPi.",
             stacklevel=2,
         )
 
-    for version in versions(requirement):
+    for version in (versions_ := versions(requirement)):
         if version in requirement.specifier:
             # If the requirement does not list any version, the lowest will be
             return version
@@ -43,11 +47,11 @@ def minimum_version(requirement: Requirement) -> Version:
     # If the specified version does not exist on PyPi, issue a warning
     # and return the lowest available version
     warnings.warn(
-        f"Exact version specified in {requirement} not found on PyPi. "
+        f"Exact version specified in {requirement} not found on PyPi.\n"
         "Using lowest available version.",
         stacklevel=2,
     )
-    return versions[0]
+    return versions_[0]
 
 
 def create(package: str, extras: list = None) -> str:
