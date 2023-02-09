@@ -88,7 +88,8 @@ with all its optional dependencies:
 
     >>> import minimum_dependencies
     >>> minimum_dependencies.create("minimum_dependencies", extras=["test", "other"])
-    ['importlib-metadata==4.11.4\n', 'packaging==23.0\n', 'requests==2.25.0\n', 'astropy[all]==5.0\n', 'pytest==6.0.0\n', 'pytest-doctestplus==0.12.0\n']
+    ['importlib-metadata==4.11.4\n', 'packaging==23.0\n', 'requests==2.25.0\n',
+    'astropy[all]==5.0\n', 'pytest==6.0.0\n', 'pytest-doctestplus==0.12.0\n']
     >>> minimum_dependencies.write(
     ...     "minimum_dependencies", "requirements.txt", extras=["test", "other"]
     ... )  # writes the requirements to requirements.txt

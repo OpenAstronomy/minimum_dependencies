@@ -13,7 +13,18 @@ from packaging.version import InvalidVersion, Version, parse
 
 
 def versions(requirement: Requirement) -> List[Version]:
-    """Get the versions available on PyPi for a given requirement."""
+    """
+    Get the versions available on PyPi for a given requirement.
+
+    Parameters
+    ----------
+    requirement : Requirement
+        The requirement to get the versions for.
+
+    Returns
+    -------
+    A sorted list of versions available on PyPi for the given requirement.
+    """
     content = requests.get(
         f"https://pypi.python.org/pypi/{requirement.name}/json",
         timeout=30,
@@ -32,7 +43,22 @@ def versions(requirement: Requirement) -> List[Version]:
 
 
 def minimum_version(requirement: Requirement) -> Version:
-    """Return minimum version available on PyPi for a given version specification."""
+    """
+    Return minimum version available on PyPi for a given version specification.
+
+    Note: this will fall back on the oldest version available on PyPi if there
+    is no version available that matches the version specification. Or no specification
+    found at all.
+
+    Parameters
+    ----------
+    requirement : Requirement
+        The requirement to get the versions for.
+
+    Returns
+    -------
+    The minimum version available on PyPi for the given requirement.
+    """
     if not requirement.specifier:
         warnings.warn(
             f"No version specifier for {requirement.name} in install_requires.\n"
@@ -56,7 +82,31 @@ def minimum_version(requirement: Requirement) -> Version:
 
 
 def create(package: str, extras: list = None) -> List[str]:
-    """Create a list of requirements for a given package."""
+    r"""
+    Create a list of requirements for a given package.
+
+    Parameters
+    ----------
+    package : str
+        The name of the package to create the requirements for.
+    extras : list, optional
+        A list of extras, install requirements to include in the requirements.
+
+    Returns
+    -------
+    A list of requirements strings pinning at minimum requirement for the given package.
+
+    Example
+    -------
+    No extras specified:
+    >>> create("minimum_dependencies")
+    ['importlib-metadata==4.11.4\n', 'packaging==23.0\n', 'requests==2.25.0\n']
+
+    Extras specified:
+    >>> create("minimum_dependencies", extras=["test", "other"])
+    ['importlib-metadata==4.11.4\n', 'packaging==23.0\n', 'requests==2.25.0\n',
+    'astropy[all]==5.0\n', 'pytest==6.0.0\n', 'pytest-doctestplus==0.12.0\n']
+    """
     extras = [] if extras is None else extras
     requirements = []
 
@@ -85,7 +135,23 @@ def create(package: str, extras: list = None) -> List[str]:
 
 
 def write(package: str, filename: str = None, extras: list = None) -> None:
-    """Write out a requirements file for a given package."""
+    """
+    Write out a requirements file for a given package.
+
+    Parameters
+    ----------
+    package : str
+        The name of the package to create the requirements for.
+    filename : str, optional
+        The name of the file to write the requirements to.
+        If not given, write to stdout.
+    extras : list, optional
+        A list of extras, install requirements to include in the requirements.
+
+    Returns
+    -------
+    Nothing
+    """
     requirements = "".join(create(package, extras=extras))
 
     if filename is None:
