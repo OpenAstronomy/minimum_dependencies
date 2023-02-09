@@ -7,7 +7,7 @@ from itertools import chain
 from ._core import write
 
 
-def argparser() -> ArgumentParser:
+def _argparser() -> ArgumentParser:
     """Create the argument parser."""
     parser = ArgumentParser(
         "minimum_deps",
@@ -36,10 +36,10 @@ def argparser() -> ArgumentParser:
     return parser
 
 
-def main() -> None:
+def main(args: any = None) -> None:
     """Run the script."""
-    parser = argparser()
-    args = parser.parse_args()
+    parser = _argparser()
+    args = parser.parse_args(args)
     extras = None if args.extras is None else list(chain.from_iterable(args.extras))
 
     write(args.package[0], args.filename, extras)
