@@ -170,9 +170,10 @@ def mock_package(tmp_path_factory):
     test = [
         "numpy>=1.20",
         "scipy>=1.6",
+        "astropy[all]>=5",
     ]
     url = [
-        "stdatamodels @git+https://github.com/spacetelescope/stdatamodels.git@master"
+        "jwst[test] @git+https://github.com/spacetelescope/jwst.git@master"
     ]
 
     [build-system]
@@ -209,22 +210,23 @@ class TestCreate:
     def setup_class(self):
         """Create truths for testing."""
         self.base_requrirements = [
-            "importlib-metadata==4.11.4",
-            "packaging==19.0",
-            "requests==2.22.0",
+            "importlib-metadata==4.11.4\n",
+            "packaging==19.0\n",
+            "requests==2.22.0\n",
         ]
-        self.docs_requirements = ["sphinx==3.0.0"]
+        self.docs_requirements = ["sphinx==3.0.0\n"]
         self.test_requirements = [
-            "numpy==1.20.0",
-            "scipy==1.6.0",
+            "numpy==1.20.0\n",
+            "scipy==1.6.0\n",
+            "astropy[all]==5.0\n",
         ]
         self.url_requirements = [
-            "git+https://github.com/spacetelescope/stdatamodels.git@master",
+            "jwst[test] @git+https://github.com/spacetelescope/jwst.git@master\n",
         ]
 
     def test_return(self, mock_package):
         """
-        Test that the create function returns a string.
+        Test that the create function returns a list of strings.
 
         There should be one line per requirement.
         """
@@ -232,8 +234,10 @@ class TestCreate:
             import_module("mock_package")
 
             requirements = create("mock_package")
-            assert isinstance(requirements, str)
-            assert set(requirements.splitlines()) == set(self.base_requrirements)
+            assert isinstance(requirements, list)
+            for requirement in requirements:
+                assert isinstance(requirement, str)
+            assert set(requirements) == set(self.base_requrirements)
 
     def test_extras(self, mock_package):
         """Test that extras dependencies can be included."""
@@ -241,7 +245,7 @@ class TestCreate:
             import_module("mock_package")
 
             assert set(
-                create("mock_package", extras=["docs", "test"]).splitlines(),
+                create("mock_package", extras=["docs", "test"]),
             ) == set(
                 self.base_requrirements
                 + self.docs_requirements
@@ -254,7 +258,7 @@ class TestCreate:
             import_module("mock_package")
 
             assert set(
-                create("mock_package", extras=["url"]).splitlines(),
+                create("mock_package", extras=["url"]),
             ) == set(
                 self.base_requrirements + self.url_requirements,
             )
@@ -269,9 +273,11 @@ class TestWrite:
             import_module("mock_package")
 
             write("mock_package", extras=["docs", "test", "url"])
-            assert capsys.readouterr().out == create(
-                "mock_package",
-                extras=["docs", "test", "url"],
+            assert capsys.readouterr().out == "".join(
+                create(
+                    "mock_package",
+                    extras=["docs", "test", "url"],
+                ),
             )
 
     def test_filename(self, mock_package, tmp_path):
@@ -284,7 +290,9 @@ class TestWrite:
             write("mock_package", filename=filename, extras=["docs", "test", "url"])
 
             with filename.open("r") as f:
-                assert f.read() == create(
-                    "mock_package",
-                    extras=["docs", "test", "url"],
+                assert f.read() == "".join(
+                    create(
+                        "mock_package",
+                        extras=["docs", "test", "url"],
+                    ),
                 )

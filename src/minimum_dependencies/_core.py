@@ -54,7 +54,7 @@ def minimum_version(requirement: Requirement) -> Version:
     return versions_[0]
 
 
-def create(package: str, extras: list = None) -> str:
+def create(package: str, extras: list = None) -> list[str]:
     """Create a list of requirements for a given package."""
     extras = [] if extras is None else extras
 
@@ -65,19 +65,25 @@ def create(package: str, extras: list = None) -> str:
         if requirement.marker is None or any(
             requirement.marker.evaluate({"extra": e}) for e in extras
         ):
+            name = (
+                f"{requirement.name}[{','.join(requirement.extras)}]"
+                if requirement.extras
+                else requirement.name
+            )
+
             if requirement.url is None:
                 requirements.append(
-                    f"{requirement.name}=={minimum_version(requirement)}\n",
+                    f"{name}=={minimum_version(requirement)}\n",
                 )
             else:
-                requirements.append(f"{requirement.url}\n")
+                requirements.append(f"{name} @{requirement.url}\n")
 
-    return "".join(requirements)
+    return requirements
 
 
 def write(package: str, filename: str = None, extras: list = None) -> None:
     """Write out a requirements file for a given package."""
-    requirements = create(package, extras=extras)
+    requirements = "".join(create(package, extras=extras))
 
     if filename is None:
         sys.stdout.write(requirements)
