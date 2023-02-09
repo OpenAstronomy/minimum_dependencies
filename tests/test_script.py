@@ -14,7 +14,6 @@ class TestMain:
             "packaging==19.0\n",
             "requests==2.22.0\n",
         ]
-        self.docs_requirements = ["tomli==2.0.0\n"]
         self.test_requirements = [
             "pytest==6.0.0\n",
             "pytest-doctestplus==0.12.0\n",
@@ -27,9 +26,9 @@ class TestMain:
 
     def test_extras_main(self, capsys):
         """Test the main function with extras."""
-        main(["minimum_dependencies", "--extras", "docs", "test"])
+        main(["minimum_dependencies", "--extras", "test"])
         assert capsys.readouterr().out == "".join(
-            self.base_requrirements + self.docs_requirements + self.test_requirements,
+            self.base_requrirements + self.test_requirements,
         )
 
     def test_filename_main(self, tmp_path, capsys):
@@ -48,11 +47,10 @@ class TestMain:
                 "--filename",
                 str(filename),
                 "--extras",
-                "docs",
                 "test",
             ],
         )
         assert capsys.readouterr().out == ""
         assert filename.read_text() == "".join(
-            self.base_requrirements + self.docs_requirements + self.test_requirements,
+            self.base_requrirements + self.test_requirements,
         )

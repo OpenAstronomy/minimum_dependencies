@@ -24,9 +24,6 @@ dependencies = [
   "requests>=2.22",
 ]
 [project.optional-dependencies]
-docs = [
-  'tomli>=2; python_version < "3.11"',
-]
 test = [
   "pytest>=6",
   "pytest-doctestplus>=0.12",
@@ -52,7 +49,7 @@ write_to = "src/minimum_dependencies/_version.py"
 [tool.pytest.ini_options]
 testpaths = ['tests']
 minversion = 4.6
-norecursedirs = ['build', 'docs/_build', 'docs/sphinxext']
+norecursedirs = ['build']
 doctest_plus = 'enabled'
 filterwarnings = [
     'error',
@@ -110,6 +107,6 @@ extend-ignore = ["I"]
 convention = "numpy"
 
 [tool.codespell]
-skip="*.pdf,.tox,build,./tags,.git,docs/_build"
+skip="*.pdf,.tox,build,./tags,.git"
 # ignore-words-list="""
 # """
