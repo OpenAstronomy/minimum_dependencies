@@ -1,11 +1,5 @@
 """Test the _core module."""
 
-import os
-import subprocess
-import sys
-from contextlib import contextmanager
-from importlib import import_module
-from pathlib import Path
 
 import pytest
 import requests
@@ -13,6 +7,8 @@ from packaging.requirements import Requirement
 from packaging.version import Version
 
 from minimum_dependencies._core import create, minimum_version, versions, write
+
+from .common import _BaseTest
 
 OLD_REQUESTS = Version(requests.__version__) < Version("2.28.2")
 
@@ -130,144 +126,37 @@ class TestMinimumVersion:
             assert minimum_version(requirement) == self.oldest
 
 
-@contextmanager
-def set_dir(path: Path):
-    """Set the cwd to the given path for the duration of the context manager."""
-    origin = Path().absolute()
-    try:
-        os.chdir(path)
-        yield
-    finally:
-        os.chdir(origin)
-
-
-@pytest.fixture(scope="module")
-def mock_package(tmp_path_factory):
-    """Create a mock package for testing."""
-    mock_package = tmp_path_factory.mktemp("mock_package")
-
-    # Create some package data
-    mock_source = mock_package / "mock_package"
-    mock_source.mkdir()
-    mock_source.joinpath("__init__.py").touch()
-
-    # create readme
-    readme = mock_package / "README.md"
-    readme.write_text("This is a mock package for testing.")
-
-    # Create a pyproject.toml
-    pyproject = mock_package / "pyproject.toml"
-    pyproject.write_text(
-        """
-    [project]
-    name = "mock_package"
-    readme = "README.md"
-    version = "0.0.1"
-    dependencies = [
-        "importlib-metadata>=4.11.4",
-        "packaging>=19",
-        "requests>=2.22",
-    ]
-
-    [project.optional-dependencies]
-    docs = [
-        "sphinx>=3.0"
-    ]
-    test = [
-        "numpy>=1.20",
-        "scipy>=1.6",
-        "astropy[all]>=5",
-    ]
-    url = [
-        "jwst[test] @git+https://github.com/spacetelescope/jwst.git@master"
-    ]
-
-    [build-system]
-    build-backend = 'setuptools.build_meta'
-    requires = [
-        "setuptools>=60",
-        "setuptools_scm[toml]>=3.4",
-        "wheel",
-    ]
-
-    [tool.setuptools.packages.find]
-    include = ['mock_package']
-
-    """,
-    )
-
-    with set_dir(mock_package):
-        subprocess.call(
-            [
-                sys.executable,
-                "-m",
-                "pip",
-                "install",
-                ".",
-            ],
-        )
-
-    return mock_package
-
-
-class TestCreate:
+class TestCreate(_BaseTest):
     """Test the _core.create function."""
 
-    def setup_class(self):
-        """Create truths for testing."""
-        self.base_requrirements = [
-            "importlib-metadata==4.11.4\n",
-            "packaging==19.0\n",
-            "requests==2.22.0\n",
-        ]
-        self.docs_requirements = ["sphinx==3.0.0\n"]
-        self.test_requirements = [
-            "numpy==1.20.0\n",
-            "scipy==1.6.0\n",
-            "astropy[all]==5.0\n",
-        ]
-        self.url_requirements = [
-            "jwst[test] @git+https://github.com/spacetelescope/jwst.git@master\n",
-        ]
-
-    def test_return(self, mock_package):
+    def test_return(self):
         """
         Test that the create function returns a list of strings.
 
         There should be one line per requirement.
         """
-        with set_dir(mock_package):
-            import_module("mock_package")
+        requirements = create("minimum-dependencies")
 
-            requirements = create("mock_package")
-            assert isinstance(requirements, list)
-            for requirement in requirements:
-                assert isinstance(requirement, str)
-            assert set(requirements) == set(self.base_requrirements)
+        assert isinstance(requirements, list)
+        for requirement in requirements:
+            assert isinstance(requirement, str)
+            assert set(requirements) == set(self.base)
 
-    def test_extras(self, mock_package):
+    def test_extras(self):
         """Test that extras dependencies can be included."""
-        with set_dir(mock_package):
-            import_module("mock_package")
+        assert set(
+            create("minimum-dependencies", extras=["test", "testing_other"]),
+        ) == set(
+            self.base + self.test + self.testing_other,
+        )
 
-            assert set(
-                create("mock_package", extras=["docs", "test"]),
-            ) == set(
-                self.base_requrirements
-                + self.docs_requirements
-                + self.test_requirements,
-            )
-
-    def test_url(self, mock_package):
+    def test_url(self):
         """Test that url dependencies can be included."""
-        with set_dir(mock_package):
-            import_module("mock_package")
-
-            assert set(
-                create("mock_package", extras=["url"]),
-            ) == set(
-                self.base_requrirements + self.url_requirements,
-            )
+        assert set(
+            create("minimum-dependencies", extras=["testing_url"]),
+        ) == set(
+            self.base + self.testing_url,
+        )
 
     @staticmethod
     def test_empty():
@@ -275,35 +164,34 @@ class TestCreate:
         assert create("packaging") == []
 
 
-class TestWrite:
+class TestWrite(_BaseTest):
     """Test the _core.write function."""
 
-    def test_stout(self, mock_package, capsys):
+    def test_stout(self, capsys):
         """Test writing to stdout."""
-        with set_dir(mock_package):
-            import_module("mock_package")
+        write("minimum-dependencies", extras=["test", "testing_other", "testing_url"])
+        assert capsys.readouterr().out == "".join(
+            create(
+                "minimum-dependencies",
+                extras=["test", "testing_other", "testing_url"],
+            ),
+        )
 
-            write("mock_package", extras=["docs", "test", "url"])
-            assert capsys.readouterr().out == "".join(
-                create(
-                    "mock_package",
-                    extras=["docs", "test", "url"],
-                ),
-            )
-
-    def test_filename(self, mock_package, tmp_path):
+    def test_filename(self, tmp_path, capsys):
         """Test writing to a file."""
         filename = tmp_path / "requirements-min.txt"
 
-        with set_dir(mock_package):
-            import_module("mock_package")
+        write(
+            "minimum-dependencies",
+            filename=filename,
+            extras=["test", "testing_other", "testing_url"],
+        )
+        assert capsys.readouterr().out == ""
 
-            write("mock_package", filename=filename, extras=["docs", "test", "url"])
-
-            with filename.open("r") as f:
-                assert f.read() == "".join(
-                    create(
-                        "mock_package",
-                        extras=["docs", "test", "url"],
-                    ),
-                )
+        with filename.open("r") as f:
+            assert f.read() == "".join(
+                create(
+                    "minimum-dependencies",
+                    extras=["test", "testing_other", "testing_url"],
+                ),
+            )
