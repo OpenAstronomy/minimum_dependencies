@@ -5,7 +5,26 @@ from typing import TYPE_CHECKING
 import pytest
 
 if TYPE_CHECKING:
-    from minimum_dependencies._core import Fail
+    from minimum_dependencies._core import Fail  # pragma: no cover
+
+
+_TEST = "test"
+_TESTING_NO_EXIST = "testing_no_exist"
+_TESTING_NO_PIN = "testing_no_pin"
+_TESTING_OTHER = "testing_other"
+_TESTING_URL = "testing_url"
+
+_FAIL_MSG = {
+    "testing_no_exist": r"Exact version .* not found on PyPi.",
+    "testing_no_pin": r"No version specifier for .* in install_requires.",
+}
+
+
+def _get_fail_context(fail: "Fail", extras: str) -> pytest.raises:
+    if fail:
+        return pytest.raises(ValueError, match=_FAIL_MSG[extras])
+
+    return pytest.warns(UserWarning, match=_FAIL_MSG[extras] + r"\nUsing lowest.*")
 
 
 class _BaseTest:
@@ -34,10 +53,3 @@ class _BaseTest:
         self.testing_error = [
             "numpy==0.9.6\n",
         ]
-
-
-def _get_context(fail: "Fail", msg: str) -> pytest.raises:
-    if fail:
-        return pytest.raises(ValueError, match=msg)
-
-    return pytest.warns(UserWarning, match=msg + r"\nUsing lowest.*")

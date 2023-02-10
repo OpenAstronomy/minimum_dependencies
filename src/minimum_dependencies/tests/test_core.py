@@ -8,7 +8,15 @@ from packaging.version import Version
 
 from minimum_dependencies._core import Fail, create, minimum_version, versions, write
 
-from .common import _BaseTest, _get_context
+from .common import (
+    _TEST,
+    _TESTING_NO_EXIST,
+    _TESTING_NO_PIN,
+    _TESTING_OTHER,
+    _TESTING_URL,
+    _BaseTest,
+    _get_fail_context,
+)
 
 OLD_REQUESTS = Version(requests.__version__) < Version("2.28.2")
 
@@ -96,30 +104,22 @@ class TestMinimumVersion:
         assert minimum_version(self.requirement) == self.minimum
 
     @pytest.mark.parametrize("fail", Fail)
-    def test_no_exact(self, fail):
+    @pytest.mark.parametrize("extras", [_TESTING_NO_EXIST, _TESTING_NO_PIN])
+    def test_warning_or_error(self, fail, extras):
         """
-        Test that an error/warning is given when the exact version is not found on PyPi.
-
-        Also, test the minimum_version function falls back to the lowest available
-        in this case
-        """
-        requirement = Requirement("numpy>=999.999.999")
-
-        with _get_context(fail, r"Exact version .* not found on PyPi."):
-            assert minimum_version(requirement, fail=fail) == self.oldest
-
-    @pytest.mark.parametrize("fail", Fail)
-    def test_no_specifier(self, fail):
-        """
-        Test that an error/warning is issued when no version specifier is given.
+        Test that an error/warning is issued when requirements are incorrect.
 
         Also, test the minimum_version function falls back to the lowest available
         in this case.
-        """
-        requirement = Requirement("numpy")
 
-        with _get_context(fail, r"No version specifier for .* in install_requires."):
-            assert minimum_version(requirement, fail=fail) == self.oldest
+        Errors/warnings are issues when:
+            - the exact version is not found on PyPi.
+            - no version specifier is given.
+        """
+        specifier = "numpy>=999.999.999" if extras == _TESTING_NO_EXIST else "numpy"
+
+        with _get_fail_context(fail, extras):
+            assert minimum_version(Requirement(specifier), fail=fail) == self.oldest
 
 
 class TestCreate(_BaseTest):
@@ -141,13 +141,13 @@ class TestCreate(_BaseTest):
     def test_extras(self):
         """Test that extras dependencies can be included."""
         assert set(
-            create("minimum-dependencies", extras=["test", "testing_other"]),
+            create("minimum-dependencies", extras=[_TEST, _TESTING_OTHER]),
         ) == set(self.base + self.test + self.testing_other)
 
     def test_url(self):
         """Test that url dependencies can be included."""
         assert set(
-            create("minimum-dependencies", extras=["testing_url"]),
+            create("minimum-dependencies", extras=[_TESTING_URL]),
         ) == set(self.base + self.testing_url)
 
     @staticmethod
@@ -156,19 +156,18 @@ class TestCreate(_BaseTest):
         assert create("packaging") == []
 
     @pytest.mark.parametrize("fail", Fail)
-    def test_no_exact(self, fail):
-        """Test that an error/warning is no exact version is found on PyPi."""
-        with _get_context(fail, r"Exact version .* not found on PyPi."):
-            assert set(
-                create("minimum-dependencies", extras=["testing_no_exist"], fail=fail),
-            ) == set(self.base + self.testing_error)
+    @pytest.mark.parametrize("extras", [_TESTING_NO_EXIST, _TESTING_NO_PIN])
+    def test_warning_or_error(self, fail, extras):
+        """
+        Test that an error/warning is issued when requirements are incorrect.
 
-    @pytest.mark.parametrize("fail", Fail)
-    def test_no_specifier(self, fail):
-        """Test that an error/warning is issued when no version specifier is given."""
-        with _get_context(fail, r"No version specifier for .* in install_requires."):
+        Errors/warnings are issues when:
+            - the exact version is not found on PyPi.
+            - no version specifier is given.
+        """
+        with _get_fail_context(fail, extras):
             assert set(
-                create("minimum-dependencies", extras=["testing_no_pin"], fail=fail),
+                create("minimum-dependencies", extras=[extras], fail=fail),
             ) == set(self.base + self.testing_error)
 
 
@@ -177,11 +176,11 @@ class TestWrite(_BaseTest):
 
     def test_stout(self, capsys):
         """Test writing to stdout."""
-        write("minimum-dependencies", extras=["test", "testing_other", "testing_url"])
+        write("minimum-dependencies", extras=[_TEST, _TESTING_OTHER, _TESTING_URL])
         assert capsys.readouterr().out == "".join(
             create(
                 "minimum-dependencies",
-                extras=["test", "testing_other", "testing_url"],
+                extras=[_TEST, _TESTING_OTHER, _TESTING_URL],
             ),
         )
 
@@ -192,7 +191,7 @@ class TestWrite(_BaseTest):
         write(
             "minimum-dependencies",
             filename=filename,
-            extras=["test", "testing_other", "testing_url"],
+            extras=[_TEST, _TESTING_OTHER, _TESTING_URL],
         )
         assert capsys.readouterr().out == ""
 
@@ -200,6 +199,6 @@ class TestWrite(_BaseTest):
             assert f.read() == "".join(
                 create(
                     "minimum-dependencies",
-                    extras=["test", "testing_other", "testing_url"],
+                    extras=[_TEST, _TESTING_OTHER, _TESTING_URL],
                 ),
             )

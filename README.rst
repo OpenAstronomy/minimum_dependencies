@@ -63,6 +63,7 @@ The manpage for the CLI tool is below:
                             Name of the file to write out
     --extras [EXTRAS ...], -e [EXTRAS ...]
                             List of optional dependency sets to include
+    --fail                Raise an error if pin is not present or not on PyPi.
 
 For example, to generate the minimum dependencies for ``minimum_dependencies``:
 
@@ -84,6 +85,12 @@ Similarly, to generate this with some of its optional dependencies (``test`` and
     astropy[all]==5.0
     pytest==6.0.0
     pytest-doctestplus==0.12.0
+
+.. note::
+
+    One can pass the ``--fail`` flag to raise an error if a pin is not present or not on PyPi.
+    If this flag is not passed, a warning will be issued and the pin will be set at the lowest
+    available on PyPi.
 
 Library Usage
 -------------
@@ -117,3 +124,9 @@ with all its optional dependencies:
     >>> minimum_dependencies.write(
     ...     "minimum_dependencies", "requirements.txt", extras=["test", "other"]
     ... )  # writes the requirements to requirements.txt
+
+.. note::
+
+    One can pass the argument ``fail=True`` to raise an error if a pin is not present or not on PyPi.
+    If if this is not passed, or ``False``, a warning will be issued and the pin will be set at the lowest
+    available version on PyPi.
