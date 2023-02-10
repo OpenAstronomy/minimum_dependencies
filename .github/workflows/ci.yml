@@ -20,10 +20,11 @@ jobs:
       submodules: false
       # Any env name which does not start with `pyXY` will use this Python version.
       envs: |
-        - linux: py38
-        - linux: py39
-        - linux: py10
-        - linux: py311
+        - linux: py38-cov
+        - linux: py39-cov
+        - linux: py10-cov
+        - linux: py311-cov
+      coverage: codecov
 
   test:
     needs: [core]
