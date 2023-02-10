@@ -1,9 +1,11 @@
 """Test the minimum_dependencies script itself."""
 
+import pytest
 
+from minimum_dependencies._core import Fail
 from minimum_dependencies._script import main
 
-from .common import _BaseTest
+from .common import _BaseTest, _get_context
 
 
 class TestMain(_BaseTest):
@@ -52,3 +54,22 @@ class TestMain(_BaseTest):
         assert filename.read_text() == "".join(
             self.base + self.test,
         )
+
+    @pytest.mark.parametrize("fail", Fail)
+    @pytest.mark.parametrize("extras", ["testing_no_exist", "testing_no_pin"])
+    def test_fail_main(self, capsys, fail, extras):
+        """Test the main function with a failure."""
+        msg = {
+            "testing_no_exist": r"Exact version .* not found on PyPi.",
+            "testing_no_pin": r"No version specifier for .* in install_requires.",
+        }
+
+        args = ["minimum_dependencies", "--extras", extras]
+        if fail:
+            args.append("--fail")
+
+        with _get_context(fail, msg[extras]):
+            main(args)
+            assert capsys.readouterr().out == "".join(
+                self.base + self.testing_error,
+            )
