@@ -68,7 +68,7 @@ For example, to generate the minimum dependencies for ``minimum_dependencies``:
 
 .. code-block:: console
 
-    $ minimum_dependencies requests
+    $ minimum_dependencies minimum_dependencies
     importlib-metadata==4.11.4
     packaging==23.0
     requests==2.25.0
