@@ -22,7 +22,7 @@ jobs:
       envs: |
         - linux: py38-cov
         - linux: py39-cov
-        - linux: py10-cov
+        - linux: py310-cov
         - linux: py311-cov
       coverage: codecov
 
