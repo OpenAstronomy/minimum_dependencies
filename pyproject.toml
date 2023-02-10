@@ -24,12 +24,20 @@ dependencies = [
   "requests>=2.25",
 ]
 [project.optional-dependencies]
-other = [
-  "astropy[all]>=5",
-]
 test = [
   "pytest>=6",
   "pytest-doctestplus>=0.12",
+]
+testing_other = [
+  # These are for testing purposes only
+  "astropy[all]>=5",
+  "numpy>=1.20",
+  "scipy>=1.6",
+]
+testing_url = [
+  # These are for testing purposes only
+  "jwst[test]@ git+https://github.com/spacetelescope/jwst.git@master",
+  "stdatamodels@ git+https://github.com/spacetelescope/stdatamodels.git@master",
 ]
 
 [build-system]
