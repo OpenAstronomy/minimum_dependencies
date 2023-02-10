@@ -36,6 +36,7 @@ class _BaseTest:
             "importlib-metadata==4.11.4\n",
             "packaging==23.0\n",
             "requests==2.25.0\n",
+            "typer==0.7.0\n",
         ]
         self.test = [
             "pytest==6.0.0\n",

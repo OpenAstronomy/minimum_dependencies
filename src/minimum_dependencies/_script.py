@@ -1,54 +1,43 @@
 """Contain the function linked to by the entry point."""
 
+from pathlib import Path  # noqa: TCH003
+from typing import List
 
-from argparse import ArgumentParser
-from itertools import chain
+import typer
 
-from ._core import write
+from minimum_dependencies._core import write
 
+__PACKAGE_ARGUMENT = typer.Argument(
+    ...,
+    help="Name of the package to generate requirements for",
+)
+__FILENAME_OPTION = typer.Option(
+    ...,
+    "--filename",
+    "-f",
+    help="Name of the file to write out",
+)
+__EXTRAS_OPTION = typer.Option(
+    ...,
+    "--extras",
+    "-e",
+    help="Comma-separated list of optional dependency sets to include",
+)
 
-def _argparser() -> ArgumentParser:
-    """Create the argument parser."""
-    parser = ArgumentParser(
-        "minimum_deps",
-        description=(
-            "Generate the minimum requirements for a package based on "
-            "the lower pins of its dependencies."
-        ),
-    )
-    parser.add_argument(
-        "package",
-        type=str,
-        nargs=1,
-        help="Name of the package to generate requirements for",
-    )
-    parser.add_argument(
-        "--filename",
-        "-f",
-        default=None,
-        help="Name of the file to write out",
-    )
-    parser.add_argument(
-        "--extras",
-        "-e",
-        nargs="*",
-        default=None,
-        action="append",
-        help="List of optional dependency sets to include",
-    )
-    parser.add_argument(
-        "--fail",
-        action="store_true",
-        default=False,
-        help="Raise an error if pin is not present or not on PyPi.",
-    )
-    return parser
+app = typer.Typer()
 
 
-def main(args: any = None) -> None:
-    """Run the script."""
-    parser = _argparser()
-    args = parser.parse_args(args)
-    extras = None if args.extras is None else list(chain.from_iterable(args.extras))
+@app.command()
+def minimum_dependencies(
+    package: str = __PACKAGE_ARGUMENT,
+    filename: Path = __FILENAME_OPTION,
+    extras: List[str] = __EXTRAS_OPTION,
+) -> None:
+    """Generate minimum requirements for a package based on lower dependency pins."""
+    if extras is not None:
+        extras = extras.split(",")
+    write(package, filename, extras)
 
-    write(args.package[0], filename=args.filename, extras=extras, fail=args.fail)
+
+def main() -> None:
+    app()
