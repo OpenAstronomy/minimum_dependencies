@@ -43,8 +43,8 @@ requires = [
 [tool.setuptools.packages.find]
 where = ['src']
 
-[project.entry-points]
-console_scripts = {minimum_dependencies = 'minimum_dependencies._script:main'}
+[project.scripts]
+minimum_dependencies = 'minimum_dependencies._script:main'
 
 [tool.setuptools_scm]
 write_to = "src/minimum_dependencies/_version.py"
