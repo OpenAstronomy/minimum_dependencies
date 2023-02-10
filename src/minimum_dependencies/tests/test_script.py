@@ -23,14 +23,14 @@ runner = CliRunner()
 class TestMain(_BaseTest):
     """Test the main function."""
 
-    def test_basic_main(self, capsys):
+    def test_basic_main(self):
         """Test the main function."""
-        runner.invoke(app, ["minimum_dependencies"])
-        assert capsys.readouterr().out == "".join(self.base)
+        result = runner.invoke(app, ["minimum_dependencies"])
+        assert result.stdout == "".join(self.base)
 
-    def test_extras_main(self, capsys):
+    def test_extras_main(self):
         """Test the main function with extras."""
-        runner.invoke(
+        result = runner.invoke(
             app,
             [
                 "minimum_dependencies",
@@ -38,14 +38,14 @@ class TestMain(_BaseTest):
                 f"{_TEST},{_TESTING_OTHER},{_TESTING_URL}"
             ],
         )
-        assert capsys.readouterr().out == "".join(
+        assert result.stdout == "".join(
             self.base + self.test + self.testing_other + self.testing_url,
         )
 
-    def test_filename_main(self, tmp_path, capsys):
+    def test_filename_main(self, tmp_path):
         """Test the main function with a filename."""
         filename = tmp_path / "test.txt"
-        runner.invoke(
+        result = runner.invoke(
             app,
             [
                 "minimum_dependencies",
@@ -53,13 +53,13 @@ class TestMain(_BaseTest):
                 str(filename),
             ],
         )
-        assert capsys.readouterr().out == ""
+        assert result.stdout == ""
         assert filename.read_text() == "".join(self.base)
 
-    def test_extras_filename_main(self, tmp_path, capsys):
+    def test_extras_filename_main(self, tmp_path):
         """Test the main function with extras and a filename."""
         filename = tmp_path / "test.txt"
-        runner.invoke(
+        result = runner.invoke(
             app,
             [
                 "minimum_dependencies",
@@ -69,7 +69,7 @@ class TestMain(_BaseTest):
                 _TEST,
             ],
         )
-        assert capsys.readouterr().out == ""
+        assert result.stdout == ""
         assert filename.read_text() == "".join(
             self.base + self.test,
         )

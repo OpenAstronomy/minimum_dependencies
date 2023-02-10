@@ -12,13 +12,13 @@ __PACKAGE_ARGUMENT = typer.Argument(
     help="Name of the package to generate requirements for",
 )
 __FILENAME_OPTION = typer.Option(
-    ...,
+    None,
     "--filename",
     "-f",
     help="Name of the file to write out",
 )
 __EXTRAS_OPTION = typer.Option(
-    ...,
+    None,
     "--extras",
     "-e",
     help="Comma-separated list of optional dependency sets to include",
