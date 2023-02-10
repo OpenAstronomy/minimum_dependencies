@@ -22,6 +22,7 @@ dependencies = [
   "importlib-metadata>=4.11.4",
   "packaging>=23",
   "requests>=2.25",
+  "typer>=0.7.0",
 ]
 [project.optional-dependencies]
 other = [

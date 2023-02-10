@@ -1,48 +1,26 @@
 """Contain the function linked to by the entry point."""
 
+from pathlib import Path
 
-from argparse import ArgumentParser
-from itertools import chain
+import typer
 
-from ._core import write
-
-
-def _argparser() -> ArgumentParser:
-    """Create the argument parser."""
-    parser = ArgumentParser(
-        "minimum_deps",
-        description=(
-            "Generate the minimum requirements for a package based on "
-            "the lower pins of its dependencies."
-        ),
-    )
-    parser.add_argument(
-        "package",
-        type=str,
-        nargs=1,
-        help="Name of the package to generate requirements for",
-    )
-    parser.add_argument(
-        "--filename",
-        "-f",
-        default=None,
-        help="Name of the file to write out",
-    )
-    parser.add_argument(
-        "--extras",
-        "-e",
-        nargs="*",
-        default=None,
-        action="append",
-        help="List of optional dependency sets to include",
-    )
-    return parser
+from minimum_dependencies._core import write
 
 
-def main(args: any = None) -> None:
-    """Run the script."""
-    parser = _argparser()
-    args = parser.parse_args(args)
-    extras = None if args.extras is None else list(chain.from_iterable(args.extras))
+def minimum_dependencies(
+        package: str = typer.Argument(..., help="Name of the package to generate requirements for"),
+        filename: Path = typer.Option(None, "--filename", "-f", help="Name of the file to write out"),
+        extras: str = typer.Option(None, "--extras", "-e",
+                                   help="Comma-separated list of optional dependency sets to include"),
+):
+    """
+    Generate the minimum requirements for a package based on the lower pins of its dependencies.
+    """
 
-    write(args.package[0], args.filename, extras)
+    if extras is not None:
+        extras = extras.split(',')
+    write(package, filename, extras)
+
+
+def main():
+    typer.run(minimum_dependencies)
