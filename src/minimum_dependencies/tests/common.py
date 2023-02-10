@@ -1,5 +1,12 @@
 """Common test utilities for this package."""
 
+from typing import TYPE_CHECKING
+
+import pytest
+
+if TYPE_CHECKING:
+    from minimum_dependencies._core import Fail
+
 
 class _BaseTest:
     """Base class for tests that test against this package."""
@@ -24,3 +31,13 @@ class _BaseTest:
             "jwst[test] @git+https://github.com/spacetelescope/jwst.git@master\n",
             "stdatamodels @git+https://github.com/spacetelescope/stdatamodels.git@master\n",  # noqa: E501
         ]
+        self.testing_error = [
+            "numpy==0.9.6\n",
+        ]
+
+
+def _get_context(fail: "Fail", msg: str) -> pytest.raises:
+    if fail:
+        return pytest.raises(ValueError, match=msg)
+
+    return pytest.warns(UserWarning, match=msg + r"\nUsing lowest.*")

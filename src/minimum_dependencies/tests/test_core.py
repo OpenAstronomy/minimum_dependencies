@@ -6,9 +6,9 @@ import requests
 from packaging.requirements import Requirement
 from packaging.version import Version
 
-from minimum_dependencies._core import create, minimum_version, versions, write
+from minimum_dependencies._core import Fail, create, minimum_version, versions, write
 
-from .common import _BaseTest
+from .common import _BaseTest, _get_context
 
 OLD_REQUESTS = Version(requests.__version__) < Version("2.28.2")
 
@@ -95,35 +95,31 @@ class TestMinimumVersion:
         """Test that the minimum_version function returns the specified version."""
         assert minimum_version(self.requirement) == self.minimum
 
-    def test_no_exact_warning(self):
+    @pytest.mark.parametrize("fail", Fail)
+    def test_no_exact(self, fail):
         """
-        Test that a warning is issued when the exact version is not found on PyPi.
+        Test that an error/warning is given when the exact version is not found on PyPi.
 
         Also, test the minimum_version function falls back to the lowest available
         in this case
         """
-        requirement = Requirement("numpy>=9.999")
+        requirement = Requirement("numpy>=999.999.999")
 
-        with pytest.warns(
-            UserWarning,
-            match=r"Exact version specified .* not found on PyPi.*",
-        ):
-            assert minimum_version(requirement) == self.oldest
+        with _get_context(fail, r"Exact version .* not found on PyPi."):
+            assert minimum_version(requirement, fail=fail) == self.oldest
 
-    def test_no_specifier_warning(self):
+    @pytest.mark.parametrize("fail", Fail)
+    def test_no_specifier(self, fail):
         """
-        Test that a warning is issued when no version specifier is given.
+        Test that an error/warning is issued when no version specifier is given.
 
         Also, test the minimum_version function falls back to the lowest available
         in this case.
         """
         requirement = Requirement("numpy")
 
-        with pytest.warns(
-            UserWarning,
-            match=r"No version specifier for .* in install_requires.*",
-        ):
-            assert minimum_version(requirement) == self.oldest
+        with _get_context(fail, r"No version specifier for .* in install_requires."):
+            assert minimum_version(requirement, fail=fail) == self.oldest
 
 
 class TestCreate(_BaseTest):
@@ -146,22 +142,34 @@ class TestCreate(_BaseTest):
         """Test that extras dependencies can be included."""
         assert set(
             create("minimum-dependencies", extras=["test", "testing_other"]),
-        ) == set(
-            self.base + self.test + self.testing_other,
-        )
+        ) == set(self.base + self.test + self.testing_other)
 
     def test_url(self):
         """Test that url dependencies can be included."""
         assert set(
             create("minimum-dependencies", extras=["testing_url"]),
-        ) == set(
-            self.base + self.testing_url,
-        )
+        ) == set(self.base + self.testing_url)
 
     @staticmethod
     def test_empty():
         """Test that a package with no requirements returns an empty list."""
         assert create("packaging") == []
+
+    @pytest.mark.parametrize("fail", Fail)
+    def test_no_exact(self, fail):
+        """Test that an error/warning is no exact version is found on PyPi."""
+        with _get_context(fail, r"Exact version .* not found on PyPi."):
+            assert set(
+                create("minimum-dependencies", extras=["testing_no_exist"], fail=fail),
+            ) == set(self.base + self.testing_error)
+
+    @pytest.mark.parametrize("fail", Fail)
+    def test_no_specifier(self, fail):
+        """Test that an error/warning is issued when no version specifier is given."""
+        with _get_context(fail, r"No version specifier for .* in install_requires."):
+            assert set(
+                create("minimum-dependencies", extras=["testing_no_pin"], fail=fail),
+            ) == set(self.base + self.testing_error)
 
 
 class TestWrite(_BaseTest):

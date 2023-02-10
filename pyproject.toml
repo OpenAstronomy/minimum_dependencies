@@ -28,6 +28,14 @@ test = [
   "pytest>=6",
   "pytest-doctestplus>=0.12",
 ]
+testing_no_exist = [
+  # These are for testing purposes only
+  "numpy>=999.999.999",
+]
+testing_no_pin = [
+  # These are for testing purposes only
+  "numpy",
+]
 testing_other = [
   # These are for testing purposes only
   "astropy[all]>=5",
