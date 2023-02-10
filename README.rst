@@ -10,8 +10,8 @@ minimum_dependencies
 .. image:: https://img.shields.io/pypi/l/minimum-dependencies.svg
     :target: https://img.shields.io/pypi/l/minimum-dependencies.svg
 
-.. image:: https://codecov.io/github/WilliamJamieson/minimum_dependencies/branch/main/graph/badge.svg?token=QUJV1VU7MO
-    :target: https://codecov.io/github/WilliamJamieson/minimum_dependencies
+.. image:: https://codecov.io/gh/spacetelescope/minimum_dependencies/branch/main/graph/badge.svg?token=0nyyslY22s
+    :target: https://codecov.io/gh/spacetelescope/minimum_dependencies
 
 .. image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
     :target: https://github.com/pre-commit/pre-commit
