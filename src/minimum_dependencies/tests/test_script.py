@@ -1,9 +1,19 @@
 """Test the minimum_dependencies script itself."""
 
+import pytest
 
+from minimum_dependencies._core import Fail
 from minimum_dependencies._script import main
 
-from .common import _BaseTest
+from .common import (
+    _TEST,
+    _TESTING_NO_EXIST,
+    _TESTING_NO_PIN,
+    _TESTING_OTHER,
+    _TESTING_URL,
+    _BaseTest,
+    _get_fail_context,
+)
 
 
 class TestMain(_BaseTest):
@@ -20,9 +30,9 @@ class TestMain(_BaseTest):
             [
                 "minimum_dependencies",
                 "--extras",
-                "test",
-                "testing_other",
-                "testing_url",
+                _TEST,
+                _TESTING_OTHER,
+                _TESTING_URL,
             ],
         )
         assert capsys.readouterr().out == "".join(
@@ -45,10 +55,22 @@ class TestMain(_BaseTest):
                 "--filename",
                 str(filename),
                 "--extras",
-                "test",
+                _TEST,
             ],
         )
         assert capsys.readouterr().out == ""
         assert filename.read_text() == "".join(
             self.base + self.test,
         )
+
+    @pytest.mark.parametrize("fail", Fail)
+    @pytest.mark.parametrize("extras", [_TESTING_NO_EXIST, _TESTING_NO_PIN])
+    def test_fail_main(self, capsys, fail, extras):
+        """Test the main function with a failure."""
+        args = ["minimum_dependencies", "--extras", extras]
+        if fail:
+            args.append("--fail")
+
+        with _get_fail_context(fail, extras):
+            main(args)
+            assert capsys.readouterr().out == "".join(self.base + self.testing_error)

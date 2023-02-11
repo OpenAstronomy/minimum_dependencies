@@ -36,6 +36,12 @@ def _argparser() -> ArgumentParser:
         action="append",
         help="List of optional dependency sets to include",
     )
+    parser.add_argument(
+        "--fail",
+        action="store_true",
+        default=False,
+        help="Raise an error if pin is not present or not on PyPi.",
+    )
     return parser
 
 
@@ -45,4 +51,4 @@ def main(args: any = None) -> None:
     args = parser.parse_args(args)
     extras = None if args.extras is None else list(chain.from_iterable(args.extras))
 
-    write(args.package[0], args.filename, extras)
+    write(args.package[0], filename=args.filename, extras=extras, fail=args.fail)

@@ -3,6 +3,7 @@
 import sys
 import warnings
 from contextlib import suppress
+from enum import Flag
 from pathlib import Path
 from typing import List
 
@@ -42,7 +43,14 @@ def versions(requirement: Requirement) -> List[Version]:
     return sorted(versions)
 
 
-def minimum_version(requirement: Requirement) -> Version:
+class Fail(Flag):
+    """Define the error handling behavior for minimum_version."""
+
+    TRUE = True
+    FALSE = False
+
+
+def minimum_version(requirement: Requirement, fail: Fail = Fail.FALSE) -> Version:
     """
     Return minimum version available on PyPi for a given version specification.
 
@@ -54,17 +62,22 @@ def minimum_version(requirement: Requirement) -> Version:
     ----------
     requirement : Requirement
         The requirement to get the versions for.
+    fail : Fail, optional
+        If an error is raised when the exact version is not found on PyPi. If False,
+        a warning will be issued and the lowest available version will be returned.
+        Default is False.
 
     Returns
     -------
     The minimum version available on PyPi for the given requirement.
     """
     if not requirement.specifier:
-        warnings.warn(
-            f"No version specifier for {requirement.name} in install_requires.\n"
-            "Using lowest available version on PyPi.",
-            stacklevel=2,
-        )
+        msg = f"No version specifier for {requirement.name} in install_requires."
+        if fail:
+            raise ValueError(msg)
+
+        msg += "\nUsing lowest available version on PyPi."
+        warnings.warn(msg, stacklevel=2)
 
     for version in (versions_ := versions(requirement)):
         if version in requirement.specifier:
@@ -73,15 +86,17 @@ def minimum_version(requirement: Requirement) -> Version:
 
     # If the specified version does not exist on PyPi, issue a warning
     # and return the lowest available version
-    warnings.warn(
-        f"Exact version specified in {requirement} not found on PyPi.\n"
-        "Using lowest available version.",
-        stacklevel=2,
-    )
+    msg = f"Exact version specified in {requirement} not found on PyPi."
+    if fail:
+        raise ValueError(msg)
+
+    msg += "\nUsing lowest available version on PyPi."
+    warnings.warn(msg, stacklevel=2)
+
     return versions_[0]
 
 
-def create(package: str, extras: list = None) -> List[str]:
+def create(package: str, extras: list = None, fail: Fail = Fail.FALSE) -> List[str]:
     r"""
     Create a list of requirements for a given package.
 
@@ -91,6 +106,10 @@ def create(package: str, extras: list = None) -> List[str]:
         The name of the package to create the requirements for.
     extras : list, optional
         A list of extras, install requirements to include in the requirements.
+    fail : Fail, optional
+        If an error is raised when the exact version is not found on PyPi. If False,
+        a warning will be issued and the lowest available version will be returned.
+        Default is False.
 
     Returns
     -------
@@ -127,7 +146,7 @@ def create(package: str, extras: list = None) -> List[str]:
 
                 if requirement.url is None:
                     requirements.append(
-                        f"{name}=={minimum_version(requirement)}\n",
+                        f"{name}=={minimum_version(requirement, fail=fail)}\n",
                     )
                 else:
                     requirements.append(f"{name} @{requirement.url}\n")
@@ -135,7 +154,12 @@ def create(package: str, extras: list = None) -> List[str]:
     return requirements
 
 
-def write(package: str, filename: str = None, extras: list = None) -> None:
+def write(
+    package: str,
+    filename: str = None,
+    extras: list = None,
+    fail: Fail = Fail.FALSE,
+) -> None:
     """
     Write out a requirements file for a given package.
 
@@ -148,12 +172,16 @@ def write(package: str, filename: str = None, extras: list = None) -> None:
         If not given, write to stdout.
     extras : list, optional
         A list of extras, install requirements to include in the requirements.
+    error : Error, optional
+        If an error is raised when the exact version is not found on PyPi. If False,
+        a warning will be issued and the lowest available version will be returned.
+        Default is False.
 
     Returns
     -------
     Nothing
     """
-    requirements = "".join(create(package, extras=extras))
+    requirements = "".join(create(package, extras=extras, fail=fail))
 
     if filename is None:
         sys.stdout.write(requirements)
