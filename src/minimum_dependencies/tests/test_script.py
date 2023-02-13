@@ -1,10 +1,9 @@
 """Test the minimum_dependencies script itself."""
 
-from typer.testing import CliRunner
 import pytest
+from typer.testing import CliRunner
 
 from minimum_dependencies._core import Fail
-from minimum_dependencies._script import main
 from minimum_dependencies._script import app
 
 from .common import (
@@ -35,7 +34,7 @@ class TestMain(_BaseTest):
             [
                 "minimum_dependencies",
                 "--extras",
-                f"{_TEST},{_TESTING_OTHER},{_TESTING_URL}"
+                f"{_TEST},{_TESTING_OTHER},{_TESTING_URL}",
             ],
         )
         assert result.stdout == "".join(
@@ -76,12 +75,12 @@ class TestMain(_BaseTest):
 
     @pytest.mark.parametrize("fail", Fail)
     @pytest.mark.parametrize("extras", [_TESTING_NO_EXIST, _TESTING_NO_PIN])
-    def test_fail_main(self, capsys, fail, extras):
+    def test_fail_main(self, fail, extras):
         """Test the main function with a failure."""
         args = ["minimum_dependencies", "--extras", extras]
         if fail:
             args.append("--fail")
 
         with _get_fail_context(fail, extras):
-            main(args)
-            assert capsys.readouterr().out == "".join(self.base + self.testing_error)
+            result = runner.invoke(app, args, catch_exceptions=False)
+            assert result.stdout == "".join(self.base + self.testing_error)

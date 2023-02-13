@@ -50,18 +50,18 @@ The manpage for the CLI tool is below:
 .. code-block:: bash
 
     $ minimum_dependencies --help
-Usage: minimum_dependencies [OPTIONS] PACKAGE
+    Usage: minimum_dependencies [OPTIONS] PACKAGE
 
-  Generate minimum requirements for a package based on lower dependency pins.
+      Generate minimum requirements for a package based on lower dependency pins.
 
-Arguments:
-  PACKAGE  Name of the package to generate requirements for  [required]
+    Arguments:
+      PACKAGE  Name of the package to generate requirements for  [required]
 
-Options:
-  -f, --filename PATH  Name of the file to write out
-  -e, --extras TEXT    Comma-separated list of optional dependency sets to
-                       include
-  --help               Show this message and exit.
+    Options:
+      -f, --filename PATH  Name of the file to write out
+      -e, --extras TEXT    Comma-separated list of optional dependency sets to include
+      --fail               Raise an error if pin is not present or not on PyPi.
+      --help               Show this message and exit.
 
 For example, to generate the minimum dependencies for ``minimum_dependencies``:
 
