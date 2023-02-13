@@ -34,8 +34,8 @@ def minimum_dependencies(
     extras: List[str] = __EXTRAS_OPTION,
 ) -> None:
     """Generate minimum requirements for a package based on lower dependency pins."""
-    if extras is not None:
-        extras = extras.split(",")
+    if extras is not None and len(extras) == 1:
+        extras = extras[0].split(",")
     write(package, filename, extras)
 
 
