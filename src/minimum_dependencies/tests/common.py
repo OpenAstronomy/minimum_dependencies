@@ -15,8 +15,8 @@ _TESTING_OTHER = "testing_other"
 _TESTING_URL = "testing_url"
 
 _FAIL_MSG = {
-    "testing_no_exist": r"Exact version .* not found on PyPi.",
-    "testing_no_pin": r"No version specifier for .* in install_requires.",
+    "testing_no_exist": r"Could not find \".*\" on PyPi",
+    "testing_no_pin": r"Could not parse a version specifier from \".*\"",
 }
 
 
@@ -24,7 +24,7 @@ def _get_fail_context(fail: "Fail", extras: str) -> pytest.raises:
     if fail:
         return pytest.raises(ValueError, match=_FAIL_MSG[extras])
 
-    return pytest.warns(UserWarning, match=_FAIL_MSG[extras] + r"\nUsing lowest.*")
+    return pytest.warns(UserWarning, match=_FAIL_MSG[extras])
 
 
 class _BaseTest:
