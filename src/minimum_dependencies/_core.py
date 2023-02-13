@@ -76,6 +76,7 @@ def minimum_version(requirement: Requirement, fail: Fail = Fail.FALSE) -> Versio
         if fail:
             raise ValueError(msg)
 
+        msg += "; using lowest available version"
         warnings.warn(msg, stacklevel=2)
 
     for version in (versions_ := versions(requirement)):

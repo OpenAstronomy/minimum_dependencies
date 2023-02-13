@@ -24,7 +24,10 @@ def _get_fail_context(fail: "Fail", extras: str) -> pytest.raises:
     if fail:
         return pytest.raises(ValueError, match=_FAIL_MSG[extras])
 
-    return pytest.warns(UserWarning, match=_FAIL_MSG[extras])
+    return pytest.warns(
+        UserWarning,
+        match=_FAIL_MSG[extras] + r"; using lowest available version.*",
+    )
 
 
 class _BaseTest:
