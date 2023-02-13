@@ -72,11 +72,11 @@ def minimum_version(requirement: Requirement, fail: Fail = Fail.FALSE) -> Versio
     The minimum version available on PyPi for the given requirement.
     """
     if not requirement.specifier:
-        msg = f"Could not parse a version specifier from {requirement.name}"
+        msg = f"Could not parse a version specifier from {requirement.name}."
         if fail:
             raise ValueError(msg)
 
-        msg += "; using lowest available version"
+        msg += "\nUsing lowest available version."
         warnings.warn(msg, stacklevel=2)
 
     for version in (versions_ := versions(requirement)):
@@ -86,13 +86,13 @@ def minimum_version(requirement: Requirement, fail: Fail = Fail.FALSE) -> Versio
 
     # If the specified version does not exist on PyPi, issue a warning
     # and return the lowest available version
-    msg = f"Could not find {requirement} on PyPi"
+    msg = f"Could not find {requirement} on PyPi."
     if fail:
         raise ValueError(msg)
 
     version = versions_[0]
 
-    msg += f"; using lowest available version: {version}"
+    msg += f"\nUsing lowest available version: {version}"
     warnings.warn(msg, stacklevel=2)
 
     return versions_[0]
