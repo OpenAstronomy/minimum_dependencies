@@ -24,7 +24,7 @@ __EXTRAS_OPTION = typer.Option(
     help="Comma-separated list of optional dependency sets to include",
 )
 
-app = typer.Typer()
+app = typer.Typer(add_completion=False)
 
 
 @app.command()

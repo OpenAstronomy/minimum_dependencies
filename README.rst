@@ -52,16 +52,15 @@ The manpage for the CLI tool is below:
     $ minimum_dependencies --help
 Usage: minimum_dependencies [OPTIONS] PACKAGE
 
-  Generate the minimum requirements for a package based on the lower pins of
-  its dependencies.
+  Generate minimum requirements for a package based on lower dependency pins.
 
 Arguments:
   PACKAGE  Name of the package to generate requirements for  [required]
 
 Options:
-  -f, --filename PATH  Name of the file to write out  [required]
+  -f, --filename PATH  Name of the file to write out
   -e, --extras TEXT    Comma-separated list of optional dependency sets to
-                       include  [required]
+                       include
   --help               Show this message and exit.
 
 For example, to generate the minimum dependencies for ``minimum_dependencies``:
@@ -72,6 +71,7 @@ For example, to generate the minimum dependencies for ``minimum_dependencies``:
     importlib-metadata==4.11.4
     packaging==23.0
     requests==2.25.0
+    typer==0.7.0
 
 Similarly, to generate this with some of its optional dependencies (``test`` and ``other``):
 
@@ -81,7 +81,7 @@ Similarly, to generate this with some of its optional dependencies (``test`` and
     importlib-metadata==4.11.4
     packaging==23.0
     requests==2.25.0
-    astropy[all]==5.0
+    typer==0.7.0
     pytest==6.0.0
     pytest-doctestplus==0.12.0
 
