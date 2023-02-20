@@ -39,7 +39,7 @@ repos:
     - id: flynt
 
 - repo: https://github.com/charliermarsh/ruff-pre-commit
-  rev: 'v0.0.243'
+  rev: 'v0.0.249'
   hooks:
     - id: ruff
       args: ["--fix"]
@@ -60,7 +60,7 @@ repos:
     - id: blacken-docs
 
 - repo: https://github.com/tox-dev/pyproject-fmt
-  rev: "0.6.0"
+  rev: "0.9.1"
   hooks:
     - id: pyproject-fmt
 
