@@ -1,5 +1,5 @@
 [project]
-name = "minimum_dependencies"
+name = "minimum-dependencies"
 description = "Get the minimum dependencies of a Python package"
 readme = 'README.rst'
 license = { file = 'LICENSE' }
@@ -47,6 +47,8 @@ testing_url = [
   "jwst[test]@ git+https://github.com/spacetelescope/jwst.git@master",
   "stdatamodels@ git+https://github.com/spacetelescope/stdatamodels.git@master",
 ]
+[project.scripts]
+minimum_dependencies = 'minimum_dependencies._script:main'
 
 [build-system]
 build-backend = 'setuptools.build_meta'
@@ -59,11 +61,28 @@ requires = [
 [tool.setuptools.packages.find]
 where = ['src']
 
-[project.scripts]
-minimum_dependencies = 'minimum_dependencies._script:main'
-
 [tool.setuptools_scm]
 write_to = "src/minimum_dependencies/_version.py"
+
+[tool.black]
+line-length = 88
+force-exclude = '''
+^/(
+  (
+      \.eggs
+    | \.git
+    | \.pytest_cache
+    | \.tox
+    | build
+    | dist
+  )/
+)
+'''
+
+[tool.isort]
+profile = "black"
+filter_files = true
+line_length = 88
 
 [tool.pytest.ini_options]
 testpaths = ['src', 'README.rst']
@@ -92,26 +111,6 @@ exclude_lines = [
     # Ignore branches that don't pertain to this version of Python
     'pragma: py{ ignore_python_version }',
 ]
-
-[tool.black]
-line-length = 88
-force-exclude = '''
-^/(
-  (
-      \.eggs
-    | \.git
-    | \.pytest_cache
-    | \.tox
-    | build
-    | dist
-  )/
-)
-'''
-
-[tool.isort]
-profile = "black"
-filter_files = true
-line_length = 88
 
 [tool.ruff]
 target-version = "py38"
