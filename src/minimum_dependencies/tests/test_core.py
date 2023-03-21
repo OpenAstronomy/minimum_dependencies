@@ -193,7 +193,7 @@ class TestWrite(_BaseTest):
             filename=filename,
             extras=[_TEST, _TESTING_OTHER, _TESTING_URL],
         )
-        assert capsys.readouterr().out == ""
+        assert not capsys.readouterr().out
 
         with filename.open("r") as f:
             assert f.read() == "".join(
