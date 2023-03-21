@@ -43,7 +43,7 @@ class TestMain(_BaseTest):
         """Test the main function with a filename."""
         filename = tmp_path / "test.txt"
         main(["minimum_dependencies", "--filename", str(filename)])
-        assert capsys.readouterr().out == ""
+        assert not capsys.readouterr().out
         assert filename.read_text() == "".join(self.base)
 
     def test_extras_filename_main(self, tmp_path, capsys):
@@ -58,7 +58,7 @@ class TestMain(_BaseTest):
                 _TEST,
             ],
         )
-        assert capsys.readouterr().out == ""
+        assert not capsys.readouterr().out
         assert filename.read_text() == "".join(
             self.base + self.test,
         )
