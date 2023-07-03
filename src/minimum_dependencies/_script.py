@@ -3,6 +3,7 @@
 
 from argparse import ArgumentParser
 from itertools import chain
+from typing import Optional
 
 from ._core import write
 
@@ -45,7 +46,7 @@ def _argparser() -> ArgumentParser:
     return parser
 
 
-def main(args: any = None) -> None:
+def main(args: Optional[any] = None) -> None:
     """Run the script."""
     parser = _argparser()
     args = parser.parse_args(args)

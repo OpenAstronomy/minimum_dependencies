@@ -5,7 +5,7 @@ import warnings
 from contextlib import suppress
 from enum import Flag
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 import requests
 from importlib_metadata import requires
@@ -96,7 +96,11 @@ def minimum_version(requirement: Requirement, fail: Fail = Fail.FALSE) -> Versio
     return versions_[0]
 
 
-def create(package: str, extras: list = None, fail: Fail = Fail.FALSE) -> List[str]:
+def create(
+    package: str,
+    extras: Optional[list] = None,
+    fail: Fail = Fail.FALSE,
+) -> List[str]:
     r"""
     Create a list of requirements for a given package.
 
@@ -156,8 +160,8 @@ def create(package: str, extras: list = None, fail: Fail = Fail.FALSE) -> List[s
 
 def write(
     package: str,
-    filename: str = None,
-    extras: list = None,
+    filename: Optional[str] = None,
+    extras: Optional[list] = None,
     fail: Fail = Fail.FALSE,
 ) -> None:
     """
