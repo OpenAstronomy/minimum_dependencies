@@ -48,7 +48,7 @@ class _BaseTest:
         ]
         self.testing_url = [
             "jwst[test] @git+https://github.com/spacetelescope/jwst.git@master\n",
-            "stdatamodels @git+https://github.com/spacetelescope/stdatamodels.git@master\n",  # noqa: E501
+            "stdatamodels @git+https://github.com/spacetelescope/stdatamodels.git@master\n",
         ]
         self.testing_error = [
             "numpy==0.9.6\n",
