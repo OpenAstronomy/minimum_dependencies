@@ -101,7 +101,6 @@ The library provides two public functions:
 
 For example, to generate the minimum dependencies for ``minimum_dependencies``:
 
-.. doctest-requires:: importlib_metadata
 .. code:: pycon
 
     >>> import minimum_dependencies
@@ -115,7 +114,6 @@ One can also pass these methods a list of ``extras`` (optional installs for the 
 include in the requirements. For example, to generate the minimum dependencies for ``minimum_dependencies``
 with all its optional dependencies:
 
-.. doctest-requires:: importlib_metadata
 .. code:: pycon
 
     >>> import minimum_dependencies
