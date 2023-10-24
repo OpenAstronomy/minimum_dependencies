@@ -1,5 +1,6 @@
 """Common test utilities for this package."""
 
+from sys import version_info
 from typing import TYPE_CHECKING
 
 import pytest
@@ -32,10 +33,13 @@ class _BaseTest:
 
     def setup_class(self: "_BaseTest") -> None:
         """Create the truths for testing."""
-        self.base = [
-            "packaging==23.0\n",
-            "requests==2.25.0\n",
-        ]
+        self.base = ["importlib-metadata==4.11.4\n"] if version_info < (3, 11) else []
+        self.base.extend(
+            [
+                "packaging==23.0\n",
+                "requests==2.25.0\n",
+            ],
+        )
 
         self.test = [
             "pytest==6.0.0\n",
