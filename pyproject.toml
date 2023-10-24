@@ -68,7 +68,6 @@ ignore = [
   "PY004",  # Ignore requiring docs (this is a very simple tool)
   "GH200",  # Ignore dependabot config
   "PC140",  # Ignore using mypy pre-commit
-  "PC180",  # Ignore using prettier pre-commit
   "PC901",  # Ignore custom pre-commit message
   "MY",     # Ignore mypy config
   "RTD",    # Ignore using RTD (this is a very simple tool)
