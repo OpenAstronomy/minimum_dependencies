@@ -1,11 +1,11 @@
 """Core functionality for minimum_dependencies."""
+from __future__ import annotations
 
 import sys
 import warnings
 from contextlib import suppress
 from enum import Flag
 from pathlib import Path
-from typing import List, Optional
 
 import requests
 from importlib_metadata import requires
@@ -13,7 +13,7 @@ from packaging.requirements import Requirement
 from packaging.version import InvalidVersion, Version, parse
 
 
-def versions(requirement: Requirement) -> List[Version]:
+def versions(requirement: Requirement) -> list[Version]:
     """
     Get the versions available on PyPi for a given requirement.
 
@@ -98,9 +98,9 @@ def minimum_version(requirement: Requirement, fail: Fail = Fail.FALSE) -> Versio
 
 def create(
     package: str,
-    extras: Optional[list] = None,
+    extras: list | None = None,
     fail: Fail = Fail.FALSE,
-) -> List[str]:
+) -> list[str]:
     r"""
     Create a list of requirements for a given package.
 
@@ -160,8 +160,8 @@ def create(
 
 def write(
     package: str,
-    filename: Optional[str] = None,
-    extras: Optional[list] = None,
+    filename: str | None = None,
+    extras: list | None = None,
     fail: Fail = Fail.FALSE,
 ) -> None:
     """
