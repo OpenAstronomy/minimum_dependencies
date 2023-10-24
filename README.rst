@@ -106,7 +106,7 @@ For example, to generate the minimum dependencies for ``minimum_dependencies``:
 
     >>> import minimum_dependencies
     >>> minimum_dependencies.create("minimum_dependencies")
-    ['importlib-metadata==4.11.4\n', 'packaging==23.0\n', 'requests==2.25.0\n']
+    ['packaging==23.0\n', 'requests==2.25.0\n']
     >>> minimum_dependencies.write(
     ...     "minimum_dependencies", "requirements.txt"
     ... )  # writes the requirements to requirements.txt
