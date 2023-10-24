@@ -20,10 +20,10 @@ jobs:
       submodules: false
       # Any env name which does not start with `pyXY` will use this Python version.
       envs: |
-        - linux: py38-cov
         - linux: py39-cov
         - linux: py310-cov
         - linux: py311-cov
+        - linux: py312-cov
       coverage: codecov
 
   test:
@@ -33,8 +33,8 @@ jobs:
       submodules: false
       # Any env name which does not start with `pyXY` will use this Python version.
       envs: |
-        - macos: py310
-        - windows: py310
+        - macos: py311
+        - windows: py311
 
   dev:
     needs: [core]
@@ -44,10 +44,10 @@ jobs:
       # Any env name which does not start with `pyXY` will use this Python version.
       default_python: '3.9'
       envs: |
-        - linux: py38-devdeps
         - linux: py39-devdeps
         - linux: py310-devdeps
         - linux: py311-devdeps
+        - linux: py312-devdeps
 
   oldest:
     needs: [core]
@@ -57,10 +57,10 @@ jobs:
       # Any env name which does not start with `pyXY` will use this Python version.
       default_python: '3.9'
       envs: |
-        - linux: py38-minimum_dependencies
         - linux: py39-minimum_dependencies
         - linux: py310-minimum_dependencies
         - linux: py311-minimum_dependencies
+        - linux: py312-minimum_dependencies
 
   package:
     needs: [core]
