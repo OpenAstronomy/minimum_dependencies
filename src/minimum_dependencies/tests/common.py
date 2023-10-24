@@ -33,10 +33,10 @@ class _BaseTest:
     def setup_class(self: "_BaseTest") -> None:
         """Create the truths for testing."""
         self.base = [
-            "importlib-metadata==4.11.4\n",
             "packaging==23.0\n",
             "requests==2.25.0\n",
         ]
+
         self.test = [
             "pytest==6.0.0\n",
             "pytest-doctestplus==0.12.0\n",

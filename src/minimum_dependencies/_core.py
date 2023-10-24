@@ -5,7 +5,6 @@ import sys
 import warnings
 from contextlib import suppress
 from enum import Flag
-from importlib.metadata import requires
 from pathlib import Path
 
 import requests
@@ -15,6 +14,11 @@ from packaging.version import (
     Version,
     parse,
 )
+
+if sys.version_info < (3, 11):
+    from importlib_metadata import requires
+else:
+    from importlib.metadata import requires
 
 
 def versions(requirement: Requirement) -> list[Version]:
@@ -127,11 +131,11 @@ def create(
     -------
     No extras specified:
     >>> create("minimum_dependencies")
-    ['importlib-metadata==4.11.4\n', 'packaging==23.0\n', 'requests==2.25.0\n']
+    ['packaging==23.0\n', 'requests==2.25.0\n']
 
     Extras specified:
     >>> create("minimum_dependencies", extras=["test", "testing_other"])
-    ['importlib-metadata==4.11.4\n', 'packaging==23.0\n', 'requests==2.25.0\n',
+    ['packaging==23.0\n', 'requests==2.25.0\n',
     'pytest==6.0.0\n', 'pytest-doctestplus==0.12.0\n', 'astropy[all]==5.0\n',
     'numpy==1.20.0\n', 'scipy==1.6.0\n']
     """

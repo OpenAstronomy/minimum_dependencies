@@ -19,6 +19,7 @@ dynamic = [
   'version',
 ]
 dependencies = [
+  "importlib-metadata>=4.11.4; python_version < '3.11'",
   "packaging>=23",
   "requests>=2.25",
 ]
