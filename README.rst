@@ -105,7 +105,7 @@ For example, to generate the minimum dependencies for ``minimum_dependencies``:
 
     >>> import minimum_dependencies
     >>> minimum_dependencies.create("minimum_dependencies")
-    ['importlib-metadata==4.11.4\n', 'packaging==23.0\n', 'requests==2.25.0\n']
+    ['packaging==23.0\n', 'requests==2.25.0\n']
     >>> minimum_dependencies.write(
     ...     "minimum_dependencies", "requirements.txt"
     ... )  # writes the requirements to requirements.txt
@@ -114,6 +114,7 @@ One can also pass these methods a list of ``extras`` (optional installs for the 
 include in the requirements. For example, to generate the minimum dependencies for ``minimum_dependencies``
 with all its optional dependencies:
 
+.. doctest-requires:: importlib_metadata
 .. code:: pycon
 
     >>> import minimum_dependencies

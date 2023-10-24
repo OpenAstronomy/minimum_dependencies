@@ -45,10 +45,19 @@ def _argparser() -> ArgumentParser:
     return parser
 
 
-def main(args: any | None = None) -> None:
+def main(args: list[str] | None = None) -> None:
     """Run the script."""
     parser = _argparser()
-    args = parser.parse_args(args)
-    extras = None if args.extras is None else list(chain.from_iterable(args.extras))
+    parsed_args = parser.parse_args(args)
+    extras = (
+        None
+        if parsed_args.extras is None
+        else list(chain.from_iterable(parsed_args.extras))
+    )
 
-    write(args.package[0], filename=args.filename, extras=extras, fail=args.fail)
+    write(
+        parsed_args.package[0],
+        filename=parsed_args.filename,
+        extras=extras,
+        fail=parsed_args.fail,
+    )

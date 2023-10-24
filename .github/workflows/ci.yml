@@ -4,14 +4,18 @@ on:
   workflow_dispatch:
   schedule:
     # Run every Monday at 6am UTC
-    - cron: '0 6 * * 1'
+    - cron: "0 6 * * 1"
   push:
     branches:
       - main
-      - '*.x'
+      - "*.x"
     tags:
-      - '*'
+      - "*"
   pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   core:
@@ -42,7 +46,7 @@ jobs:
     with:
       submodules: false
       # Any env name which does not start with `pyXY` will use this Python version.
-      default_python: '3.9'
+      default_python: "3.9"
       envs: |
         - linux: py39-devdeps
         - linux: py310-devdeps
@@ -55,7 +59,7 @@ jobs:
     with:
       submodules: false
       # Any env name which does not start with `pyXY` will use this Python version.
-      default_python: '3.9'
+      default_python: "3.9"
       envs: |
         - linux: py39-minimum_dependencies
         - linux: py310-minimum_dependencies

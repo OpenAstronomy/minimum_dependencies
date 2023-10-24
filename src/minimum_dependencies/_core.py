@@ -8,9 +8,20 @@ from enum import Flag
 from pathlib import Path
 
 import requests
-from importlib_metadata import requires
 from packaging.requirements import Requirement
-from packaging.version import InvalidVersion, Version, parse
+from packaging.version import (
+    InvalidVersion,
+    Version,
+    parse,
+)
+
+if sys.version_info < (3, 11):
+    from importlib_metadata import requires
+else:
+    from importlib.metadata import requires
+
+
+__doctest_requires__ = {"create": ["importlib_metadata"]}
 
 
 def versions(requirement: Requirement) -> list[Version]:
@@ -98,7 +109,7 @@ def minimum_version(requirement: Requirement, fail: Fail = Fail.FALSE) -> Versio
 
 def create(
     package: str,
-    extras: list | None = None,
+    extras: list[str] | None = None,
     fail: Fail = Fail.FALSE,
 ) -> list[str]:
     r"""
@@ -123,7 +134,7 @@ def create(
     -------
     No extras specified:
     >>> create("minimum_dependencies")
-    ['importlib-metadata==4.11.4\n', 'packaging==23.0\n', 'requests==2.25.0\n']
+    ['packaging==23.0\n', 'requests==2.25.0\n']
 
     Extras specified:
     >>> create("minimum_dependencies", extras=["test", "testing_other"])
@@ -161,7 +172,7 @@ def create(
 def write(
     package: str,
     filename: str | None = None,
-    extras: list | None = None,
+    extras: list[str] | None = None,
     fail: Fail = Fail.FALSE,
 ) -> None:
     """

@@ -1,48 +1,67 @@
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-ast
+      - id: check-case-conflict
+      - id: check-yaml
+        args: ["--unsafe"]
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-symlinks
+      - id: debug-statements
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
 
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.5.0
-  hooks:
-    - id: check-added-large-files
-    - id: check-ast
-    - id: check-case-conflict
-    - id: check-yaml
-      args: ["--unsafe"]
-    - id: check-toml
-    - id: check-merge-conflict
-    - id: check-symlinks
-    - id: debug-statements
-    - id: detect-private-key
-    - id: end-of-file-fixer
-    - id: trailing-whitespace
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.10.0
+    hooks:
+      - id: rst-directive-colons
+      - id: rst-inline-touching-normal
+      - id: text-unicode-replacement-char
 
-- repo: https://github.com/pre-commit/pygrep-hooks
-  rev: v1.10.0
-  hooks:
-    - id: rst-directive-colons
-    - id: rst-inline-touching-normal
-    - id: text-unicode-replacement-char
+  - repo: https://github.com/scientific-python/cookie
+    rev: 2023.09.21
+    hooks:
+      - id: sp-repo-review
+        additional_dependencies: ["repo-review[cli]"]
 
-- repo: https://github.com/codespell-project/codespell
-  rev: v2.2.6
-  hooks:
-    - id: codespell
-      args: ["--write-changes"]
-      additional_dependencies:
-        - tomli
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.2.6
+    hooks:
+      - id: codespell
+        args: ["--write-changes"]
+        additional_dependencies:
+          - tomli
 
-- repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: 'v0.1.1'
-  hooks:
-    - id: ruff
-      args: ["--fix"]
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: "v0.1.1"
+    hooks:
+      - id: ruff
+        args: ["--fix", "--show-fixes"]
 
-- repo: https://github.com/psf/black
-  rev: 23.10.0
-  hooks:
-    - id: black
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: "v1.6.1"
+    hooks:
+      - id: mypy
+        files: src
+        exclude: src/minimum_dependencies/tests/
+        additional_dependencies:
+          - types-requests==2.31.0.10
 
-- repo: https://github.com/asottile/blacken-docs
-  rev: '1.16.0'
-  hooks:
-    - id: blacken-docs
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 23.10.0
+    hooks:
+      - id: black
+
+  - repo: https://github.com/adamchainz/blacken-docs
+    rev: "1.16.0"
+    hooks:
+      - id: blacken-docs
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: "v3.0.3"
+    hooks:
+      - id: prettier

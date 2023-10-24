@@ -19,7 +19,7 @@ dynamic = [
   'version',
 ]
 dependencies = [
-  "importlib-metadata>=4.11.4",
+  "importlib-metadata>=4.11.4; python_version < '3.11'",
   "packaging>=23",
   "requests>=2.25",
 ]
@@ -55,7 +55,6 @@ build-backend = 'setuptools.build_meta'
 requires = [
   "setuptools>=60",
   "setuptools_scm[toml]>=3.4",
-  "wheel",
 ]
 
 [tool.setuptools.packages.find]
@@ -63,6 +62,13 @@ where = ['src']
 
 [tool.setuptools_scm]
 write_to = "src/minimum_dependencies/_version.py"
+
+[tool.repo-review]
+ignore = [
+  "PY004",  # Ignore requiring docs (this is a very simple tool)
+  "PC901",  # Ignore custom pre-commit message
+  "RTD",    # Ignore using RTD (this is a very simple tool)
+]
 
 [tool.black]
 line-length = 88
@@ -80,6 +86,7 @@ force-exclude = '''
 '''
 
 [tool.ruff]
+src = ["src"]
 target-version = "py39"
 line-length = 88
 select = ["ALL"]
@@ -90,6 +97,17 @@ select = ["ALL"]
 [tool.ruff.pydocstyle]
 convention = "numpy"
 
+[tool.mypy]
+files = "src"
+exclude = [
+  "src/minimum_dependencies/tests/"
+]
+python_version = "3.9"
+strict = true
+show_error_codes = true
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
+warn_unreachable = true
+
 [tool.isort]
 profile = "black"
 filter_files = true
@@ -97,8 +115,10 @@ line_length = 88
 
 [tool.pytest.ini_options]
 testpaths = ['src', 'README.rst']
-minversion = 4.6
+minversion = 6
 norecursedirs = ['build']
+log_cli_level = "INFO"
+xfail_strict = true
 doctest_plus = 'enabled'
 filterwarnings = [
     'error',
@@ -106,7 +126,13 @@ filterwarnings = [
 ]
 # Configuration for pytest-doctestplus
 text_file_format = 'rst'
-addopts = '--color=yes --doctest-rst'
+addopts = [
+  "-ra",              # print summary of fails/errors
+  "--color=yes",      # default to colorizing test output if possible
+  "--doctest-rst",    # enable doc testing
+  "--strict-config",  # ensure all config options are applicable
+  "--strict-markers", # ensure all markers are valid and defined
+]
 
 [tool.coverage.report]
 exclude_lines = [

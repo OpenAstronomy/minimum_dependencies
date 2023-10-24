@@ -36,7 +36,7 @@ class TestMain(_BaseTest):
             ],
         )
         assert capsys.readouterr().out == "".join(
-            self.base + self.test + self.testing_other + self.testing_url,
+            self.base_extras + self.test + self.testing_other + self.testing_url,
         )
 
     def test_filename_main(self, tmp_path, capsys):
@@ -60,7 +60,7 @@ class TestMain(_BaseTest):
         )
         assert not capsys.readouterr().out
         assert filename.read_text() == "".join(
-            self.base + self.test,
+            self.base_extras + self.test,
         )
 
     @pytest.mark.parametrize("fail", Fail)
@@ -73,4 +73,6 @@ class TestMain(_BaseTest):
 
         with _get_fail_context(fail, extras):
             main(args)
-            assert capsys.readouterr().out == "".join(self.base + self.testing_error)
+            assert capsys.readouterr().out == "".join(
+                self.base_extras + self.testing_error,
+            )
