@@ -142,13 +142,13 @@ class TestCreate(_BaseTest):
         """Test that extras dependencies can be included."""
         assert set(
             create("minimum-dependencies", extras=[_TEST, _TESTING_OTHER]),
-        ) == set(self.base + self.test + self.testing_other)
+        ) == set(self.base_extras + self.test + self.testing_other)
 
     def test_url(self):
         """Test that url dependencies can be included."""
         assert set(
             create("minimum-dependencies", extras=[_TESTING_URL]),
-        ) == set(self.base + self.testing_url)
+        ) == set(self.base_extras + self.testing_url)
 
     @staticmethod
     def test_empty():
@@ -168,7 +168,7 @@ class TestCreate(_BaseTest):
         with _get_fail_context(fail, extras):
             assert set(
                 create("minimum-dependencies", extras=[extras], fail=fail),
-            ) == set(self.base + self.testing_error)
+            ) == set(self.base_extras + self.testing_error)
 
 
 class TestWrite(_BaseTest):
