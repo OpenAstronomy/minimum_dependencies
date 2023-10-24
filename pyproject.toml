@@ -19,7 +19,6 @@ dynamic = [
   'version',
 ]
 dependencies = [
-  "importlib-metadata>=4.11.4",
   "packaging>=23",
   "requests>=2.25",
 ]
@@ -66,9 +65,7 @@ write_to = "src/minimum_dependencies/_version.py"
 [tool.repo-review]
 ignore = [
   "PY004",  # Ignore requiring docs (this is a very simple tool)
-  "PC140",  # Ignore using mypy pre-commit
   "PC901",  # Ignore custom pre-commit message
-  "MY",     # Ignore mypy config
   "RTD",    # Ignore using RTD (this is a very simple tool)
 ]
 
@@ -98,6 +95,17 @@ select = ["ALL"]
 
 [tool.ruff.pydocstyle]
 convention = "numpy"
+
+[tool.mypy]
+files = "src"
+exclude = [
+  "src/minimum_dependencies/tests/"
+]
+python_version = "3.9"
+strict = true
+show_error_codes = true
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
+warn_unreachable = true
 
 [tool.isort]
 profile = "black"

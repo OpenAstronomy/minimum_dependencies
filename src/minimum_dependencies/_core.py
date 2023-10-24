@@ -5,12 +5,16 @@ import sys
 import warnings
 from contextlib import suppress
 from enum import Flag
+from importlib.metadata import requires
 from pathlib import Path
 
 import requests
-from importlib_metadata import requires
 from packaging.requirements import Requirement
-from packaging.version import InvalidVersion, Version, parse
+from packaging.version import (
+    InvalidVersion,
+    Version,
+    parse,
+)
 
 
 def versions(requirement: Requirement) -> list[Version]:
@@ -98,7 +102,7 @@ def minimum_version(requirement: Requirement, fail: Fail = Fail.FALSE) -> Versio
 
 def create(
     package: str,
-    extras: list | None = None,
+    extras: list[str] | None = None,
     fail: Fail = Fail.FALSE,
 ) -> list[str]:
     r"""
@@ -161,7 +165,7 @@ def create(
 def write(
     package: str,
     filename: str | None = None,
-    extras: list | None = None,
+    extras: list[str] | None = None,
     fail: Fail = Fail.FALSE,
 ) -> None:
     """
