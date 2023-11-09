@@ -10,7 +10,7 @@ from ._core import write
 def _argparser() -> ArgumentParser:
     """Create the argument parser."""
     parser = ArgumentParser(
-        "minimum_deps",
+        "minimum_dependencies",
         description=(
             "Generate the minimum requirements for a package based on "
             "the lower pins of its dependencies."
