@@ -70,23 +70,16 @@ ignore = [
   "RTD",    # Ignore using RTD (this is a very simple tool)
 ]
 
-[tool.black]
-line-length = 88
-force-exclude = '''
-^/(
-  (
-      \.eggs
-    | \.git
-    | \.pytest_cache
-    | \.tox
-    | build
-    | dist
-  )/
-)
-'''
-
 [tool.ruff]
 src = ["src"]
+exclude = [
+  ".eggs",
+  ".git",
+  ".pytest_cache",
+  ".tox",
+  "build",
+  "dist",
+]
 line-length = 88
 
 [tool.ruff.lint]
@@ -98,6 +91,8 @@ select = ["ALL"]
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
 
+[tool.ruff.lint.isort]
+
 [tool.mypy]
 files = "src"
 exclude = [
@@ -108,11 +103,6 @@ strict = true
 show_error_codes = true
 enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 warn_unreachable = true
-
-[tool.isort]
-profile = "black"
-filter_files = true
-line_length = 88
 
 [tool.pytest.ini_options]
 testpaths = ['src', 'README.rst']
