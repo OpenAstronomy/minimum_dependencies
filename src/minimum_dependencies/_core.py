@@ -38,7 +38,7 @@ def versions(requirement: Requirement) -> list[Version]:
     A sorted list of versions available on PyPi for the given requirement.
     """
     content = requests.get(
-        f"https://pypi.python.org/pypi/{requirement.name}/json",
+        f"https://pypi.org/pypi/{requirement.name}/json",
         timeout=30,
     ).json()
 

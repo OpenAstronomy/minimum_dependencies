@@ -50,7 +50,7 @@ class TestVersions:
         requirement = Requirement("poppy>=1.0.2")
         num_releases = len(
             requests.get(
-                f"https://pypi.python.org/pypi/{requirement.name}/json",
+                f"https://pypi.org/pypi/{requirement.name}/json",
                 timeout=30,
             ).json()["releases"],
         )
