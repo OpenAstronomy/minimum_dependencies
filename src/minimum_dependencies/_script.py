@@ -1,4 +1,5 @@
 """Contain the function linked to by the entry point."""
+
 from __future__ import annotations
 
 from argparse import ArgumentParser
