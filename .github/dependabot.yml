@@ -1,4 +1,8 @@
 version: 2
+groups:
+  actions:                                                             
+    patterns:                                                          
+      - "*"  
 updates:
   # Maintain dependencies for GitHub Actions
   - package-ecosystem: "github-actions"
