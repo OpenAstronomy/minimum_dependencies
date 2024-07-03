@@ -1,6 +1,5 @@
 """Test the _core module."""
 
-
 import pytest
 import requests
 from packaging.requirements import Requirement

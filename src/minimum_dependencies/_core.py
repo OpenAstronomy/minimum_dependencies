@@ -1,4 +1,5 @@
 """Core functionality for minimum_dependencies."""
+
 from __future__ import annotations
 
 import sys
